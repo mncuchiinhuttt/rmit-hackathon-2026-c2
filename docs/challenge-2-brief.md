@@ -37,7 +37,22 @@ Read from `truongnguyenxuanvinh/hackathon` (public; the app is called `fairenrol
 
 - The repository was created private. The form requires a public one, so make it public before submitting: `gh repo edit mncuchiinhuttt/rmit-hackathon-2026-c2 --visibility public --accept-visibility-change-consequences`.
 - The video has to live in the repository. GitHub rejects any file over 100 MB (and warns above 50 MB); keep the recording small or use Git LFS.
-- The TideCloak dev server runs in Docker, so Docker Desktop must be running.
+- The TideCloak dev server needs a running container runtime; Docker Desktop is not required (see "TideCloak dev server").
+
+## TideCloak dev server
+
+`tideorg/tidecloak-dev:latest` is multi-arch (amd64, arm64), so runtimes on Apple silicon run it natively, without emulation. Publish it on localhost only: the admin password is the default `password`.
+
+Apple `container` (macOS 26; start and run verified 2026-10-22):
+
+```sh
+container system start --enable-kernel-install
+container run -d --name mytidecloak -c 2 -m 2G -p 127.0.0.1:8080:8080 \
+  -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=password \
+  docker.io/tideorg/tidecloak-dev:latest
+```
+
+With Docker, Colima or Podman use the same flags with `docker run` / `podman run`. The server is up when http://localhost:8080/realms/myrealm/tide-console/ returns 200. Stop it with `container stop mytidecloak`, resume with `container start mytidecloak`.
 
 ## TideCloak references
 
