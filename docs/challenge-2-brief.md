@@ -1,6 +1,6 @@
 # Challenge 2 brief: vibe code a working app with TideCloak
 
-Read on 2026-10-22 from three sources: the organiser "Submission guidelines" slide (photographed at the venue), the Google Form the slide links to, and the sample repository the slide links to. None of them states an app topic, judging criteria or scoring weights.
+Read on 2026-10-22 from the official challenge page https://tide.org/unlocked/ (primary source for the judging weights, the test and what to submit), plus the organiser "Submission guidelines" slide (photographed at the venue), the Google Form the slide links to, and the sample repository the slide links to. The working plan lives in `plans/20261022-1026-challenge-2-tidecloak-app/`.
 
 ## Submission rules
 
@@ -17,6 +17,24 @@ Read on 2026-10-22 from three sources: the organiser "Submission guidelines" sli
 
 Group name for this team: `RMIT_SGS_Gay_Hackers_C2`. It is derived from the Challenge 1 notebook name `RMIT_SGS_Gay_Hackers_C1`; confirm it before submitting.
 
+## Official brief and judging (https://tide.org/unlocked/)
+
+UNLOCKED is Challenge 2: build a small working prototype with TideCloak where no single administrator, organisation or AI can unilaterally override the rules protecting people's data and decisions, and show the new possibility that creates. Synthetic data and mocked systems are allowed; one convincing demonstration is enough.
+
+| Weight | Criterion | Official wording |
+|---|---|---|
+| 25% | Vision & originality | A fresh, ambitious answer to the challenge. |
+| 20% | Trust constraint insight | Show exactly what trust, privacy, custody or authority prevents today. |
+| 20% | Value & impact | Create meaningful value for people, organisations or society. |
+| 20% | Why TideCloak matters | Show how TideCloak materially changes what your product can credibly do. |
+| 15% | Prototype & storytelling | Make the idea understandable and show it working. |
+
+- Test: if the app would work exactly the same with ordinary login and backend permissions, develop the idea further.
+- Avoid: a project that is mainly a login demo, a security tool or a generic access-control dashboard.
+- README: the five prompts go at the top as a project overview of 300 words or fewer, with setup instructions in a separate section. Video: a two-minute `.mp4` saved in the repository, under 100 MB, structured as possibility, constraint, prototype, what changes.
+- Deadline: Vietnam and Malaysia Thu 22 Oct 6:00 pm local time; Melbourne Fri 23 Oct 10:00 am AEDT.
+- Tooling: Tide's MCP server Raziel (`https://mcp.tide.org/mcp`, https://tide.org/agent-plugins) or the TideCloak Quickstart as plan B.
+
 ## What the sample repository shows
 
 Read from `truongnguyenxuanvinh/hackathon` (public; the app is called `fairenrol`):
@@ -31,12 +49,12 @@ Read from `truongnguyenxuanvinh/hackathon` (public; the app is called `fairenrol
   5. **Prototype & storytelling**: what the prototype demonstrates today; the key interaction judges should look for.
 - Setup in the sample: open Docker, run `docker run -d -p 8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=password tideorg/tidecloak-dev:latest`, open http://localhost:8080/, create the app and set its URIs, download `tidecloak.json` into `public/`, install and run, click "Login with TideCloak".
 
-[INFERENCE] The five README sections probably mirror the judging criteria; the slide does not say so.
+Confirmed by the official page: the five prompts match the judging criteria above.
 
 ## Risks
 
 - The repository was created private. The form requires a public one, so make it public before submitting: `gh repo edit mncuchiinhuttt/rmit-hackathon-2026-c2 --visibility public --accept-visibility-change-consequences`.
-- The video has to live in the repository. GitHub rejects any file over 100 MB (and warns above 50 MB); keep the recording small or use Git LFS.
+- The video has to live in the repository, under 100 MB (GitHub rejects larger files and warns above 50 MB); keep the recording small.
 - The TideCloak dev server needs a running container runtime; Docker Desktop is not required (see "TideCloak dev server").
 
 ## TideCloak dev server
