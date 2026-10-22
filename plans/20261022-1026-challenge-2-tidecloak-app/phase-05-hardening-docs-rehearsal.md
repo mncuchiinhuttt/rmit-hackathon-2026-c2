@@ -1,70 +1,58 @@
-# Phase 05: Hardening, docs, an toàn nộp (xen kẽ với phase 03/04)
+# Phase 05: Hardening, docs and review
 
-## Context Links
+## Context links
 
-- `research/researcher-04-raziel-build-path.md` §8; `.cache/raziel/templates/templates/shared/tide-doctor.sh`; `reports/red-team-review.md`
-- `~/.agents/AGENTS.md` (docs roadmap/changelog/architecture, review sau khi code)
+- Final source/dependency/runtime verification: `reports/production-smoke-2026-10-22.md`
+- Governance regression and read-model evidence: `reports/governance-verification-2026-10-22.md`
+- Scoped reviews: `reports/code-review-2026-10-22.md`, `reports/governance-code-review-2026-10-22.md`
+- Supporting docs: `../../docs/setup-tidecloak.md`, `system-architecture.md`, `project-changelog.md`, `development-roadmap.md`
+- Repository safety rules: `../../AGENTS.md`
 
 ## Overview
 
-- Priority: P1 · Status: Pending · rải từ 15:15 đến 16:45 · mọi workstream
-- Làm các việc **không nằm trên đường găng** ngay khi có chỗ trống, **mở đường công khai sớm (15:45)** để lỗi cuối giờ không làm mất bài, và đóng băng đúng 16:15.
+- Priority: P1 · Status: final command batch, production smoke and scoped source reviews passed; human acceptance and publication gates remain open.
+- Historical event-time milestones are not active gates. No repository publication or form action was performed by this sync-back.
 
-## Key Insights
+## Final command and dependency results
 
-- Bài nộp chỉ cần URL repo public: **publish + gửi form baseline lúc ~15:45** (sau rà bí mật), rồi tiếp tục cải thiện; chỉ rủi ro nếu form không cho sửa nội dung, nhưng URL không đổi nên an toàn.
-- Rà bí mật phải gồm **lịch sử git** và các thư mục `plans/`, `research/`, `docs/` (sẽ public): trong repo có `.cache/` (ignored) và log lệnh; mật khẩu dev `password` là mặc định công khai của Tide, TideCloak bind `127.0.0.1`. Nếu thấy email licence/invite link/token trong lịch sử: viết lại lịch sử trước khi public hoặc xuất repo sạch.
-- Ổ 97% đầy: kiểm dung lượng **trước** clone sạch/build/quay; chuyển quay 720p nếu < 3 GB trống.
-- Chỉ test logic thuần có thể hỏng thật (store ghi nguyên tử, parse policy). Không test wiring/UI/mock. Token-bucket/idempotency chỉ làm nếu dư giờ.
+| Check | Observed result | Limit |
+|---|---|---|
+| `bun run typecheck` | Exit 0 in final post-cleanup batch. | Does not prove live Tide auth. |
+| `bun run lint` | Exit 0 in final post-cleanup batch. | Does not prove live Tide auth. |
+| `bun test` | Exit 0; 15 tests across 7 files, 43 expectations, 0 failures. | Synthetic fixtures do not establish human or live E2EE behavior. |
+| `bun run build` | Exit 0; no outer-workspace warning in the final batch. | Build does not prove protected runtime behavior. |
+| Production `bun run start` | Next server ready on loopback in 156 ms. | Only unauthenticated public surface exercised. |
+| Production dependency audit | 0 vulnerabilities across 92 packages. | The full development audit is separate. |
+| Full `bun audit` | One high-severity `braces@3.0.3` advisory in the dev lint-tool chain; no patched release is available per GHSA-vfj7-8cjw-p6xm. | Do not call the full audit clean or hide this finding. |
 
-## Requirements
+Full results and limitations are in the production smoke and governance verification reports. The earlier `verification-tests-2026-10-22.md` records historical batches; the latest final batch supersedes their counts for current validation status.
 
-- Không `.env`, `tidecloak.json`, mật khẩu, email licence, token, invite link, ciphertext thật trong git (cả lịch sử); `/spike` đã xóa; file mp4 < 100 MB.
-- Tài liệu: `docs/setup-tidecloak.md` (đã có từ phase 01 + số đo), `docs/system-architecture.md` (sơ đồ phase 02, proof matrix, giới hạn, đánh đổi), `docs/project-changelog.md` và `docs/development-roadmap.md` (mỗi file ngắn).
+## Production browser and boundary observations
 
-## Architecture
+- Desktop 1280×900 and mobile 375×812 with reduced motion had no horizontal overflow. First Tab focused the Tide sign-in control with a visible focus ring.
+- Refreshed `demo/screenshots/login-desktop.png` and `login-mobile.png` show only the unauthenticated workspace.
+- `/api/config` returned 200; unauthenticated `/api/circle` returned 401 with `Cache-Control: no-store`.
+- `/tide_dpop/auth` returned 200 with the expected 9,120-byte asset and SHA-256 `9d7844b938f0a2565fa910d3d30e9b8797cbfd6e0b73d59d804169a089aea757`; observed CSP and no blocking `X-Frame-Options` are recorded in the report.
+- Real sign-in navigation reached the ORK sign-in form, but no credentials were entered. One Keycloak iframe initialization request aborted and a URL wait helper timed out; later destination inspection confirmed the sign-in surface. This is not a console-error-free or authenticated-flow claim.
 
-Không thêm thành phần. Rà ranh giới tin cậy so với code thật; sửa tài liệu theo code, không sửa code cho khớp tài liệu. Giới hạn bắt buộc có trong docs/README: client code chân thực; quorum thông đồng; không ràng buộc nội dung giao dịch; tiền/escrow mock; hành vi master-admin chưa tuyên bố (hoặc kết quả H-op nếu đã đo).
+## Documentation and scoped reviews
 
-## Related Code Files
+The setup, architecture, changelog, roadmap and README have been reconciled against implementation and evidence. The README five-prompt overview is 249 words and states that live policy signing, shared encryption/decryption and quorum remain unaccepted.
 
-- Xóa: `src/app/spike/page.tsx`, mock/TODO còn sót (**chỉ sau khi** UI thật đã chạy lại trọn luồng một lần trên bản ghi hình)
-- Tạo: `docs/system-architecture.md`, `docs/project-changelog.md`, `docs/development-roadmap.md`, (tùy) `src/lib/store/json-store.test.ts`
-- Sửa: `README.md` (overview ở đầu, Setup riêng, ảnh chụp, link video)
+The scoped application re-review found all five original findings addressed and no remaining scoped issues (confidence 0.98). The governance-projection scoped review found no issues (confidence 0.96). These are scoped source reviews, not a complete security audit or live-flow proof.
 
-## Implementation Steps
+## Current checklist
 
-1. **Ngay khi có chỗ trống (từ 15:15):** viết `docs/system-architecture.md` và README Setup từ các lệnh đã chạy (không viết từ trí nhớ).
-2. `bun run build` (một lần, khi không có dev server nặng chạy) và `bun test` nếu có test; `tide-doctor.sh --url http://localhost:3000` đến `RESULT: OK`; kiểm 401/403/200; thử body > giới hạn.
-3. **Rà bí mật 15:30:** `git log -p --all | grep -nIE '(TIDE_LICENSE|@gmail|@rmit|invite|get-required-action-link|Bearer )'` (đọc tay), `git ls-files` toàn bộ, `git check-ignore -v .env data/tidecloak.json .cache`; không file > 50 MB trừ video. Review code bằng agent reviewer một lượt, sửa mục cao.
-4. **15:45 publish + form baseline** (xem phase 06 bước 6–8): README overview đã đúng số đo tại thời điểm đó, kể cả khi video chưa có (video thay sau).
-5. **16:15 đóng băng.** Xóa `/spike` sau khi quay thử trên UI thật; commit.
-6. Chạy **một** lượt tổng duyệt trên c3 theo storyboard (không phải hai); bấm giờ; ghi điểm vấp. Đã có footage dự phòng từ phase 03.
-7. Đếm lại README overview bằng script (≤ 300 từ); chỉ giữ câu đúng với số đo.
+- [x] Final typecheck, lint, full test batch (15 tests / 43 expectations) and production build passed.
+- [x] Production start, unauthenticated route smoke, DPoP relay asset/hash/CSP and desktop/mobile login workspace inspected.
+- [x] Five original scoped code-review findings addressed; no remaining scoped findings.
+- [x] Governance projection review passed with no scoped findings.
+- [x] Documentation and README claim/word-count reconciliation; overview is 249 words.
+- [ ] Secret and Git-history review for publication; not recorded as complete.
+- [ ] Private commit/push and clean-checkout build; parent validation remains pending.
+- [ ] Repository publication; repo remains private and authorized visibility change is not performed.
+- [ ] Human enrollment, authenticated protected success and live Tide acceptance; still unverified.
 
-## Todo List
+## Acceptance and security boundary
 
-- [ ] Architecture + Setup viết từ lệnh thật
-- [ ] build/test/doctor xanh
-- [ ] Rà bí mật + lịch sử git sạch
-- [ ] Publish + form baseline 15:45
-- [ ] `/spike` đã xóa sau khi UI thật chạy trọn luồng
-- [ ] README overview ≤ 300 từ
-
-## Success Criteria
-
-- Người ngoài mở repo public thấy README đúng template; clone sạch + `bun install` + `bun run build` thành công; không bí mật trong lịch sử; form đã gửi trước 16:00.
-
-## Risk Assessment
-
-- Lộ bí mật lúc public: rà lịch sử trước 15:45; nếu có, viết lại lịch sử hoặc xuất repo sạch (cho phép mất tối đa 20 phút, đã tính trong cửa sổ).
-- Lỗi build muộn: giữ `main` luôn build được; sửa trên nhánh, merge khi xanh.
-- Máy quá tải: không chạy build + dev + quay cùng lúc.
-
-## Security Considerations
-
-- OWASP rút gọn: CSP (nêu rõ giới hạn), DPoP, validate input/size, không log bí mật, lỗi không lộ stack. Repo public: không chứa email, token, invite, mật khẩu thật, dữ liệu thật.
-
-## Next Steps
-
-Phase 06 quay từ bản đã đóng băng.
+Current Tide enrollment synchronization is 0/5. No authenticated protected success, human quorum, live policy signing, ORK encryption/decryption/refusal, or release redemption has been exercised. Build, source reviews, read-model parsing, and unauthenticated browser behavior do not substitute for those acceptance paths. Before authorized publication, review tracked files and Git history for personal email, consent, invite URLs, credentials, tokens, private adapter/config and raw responses; `.gitignore` does not clean history.

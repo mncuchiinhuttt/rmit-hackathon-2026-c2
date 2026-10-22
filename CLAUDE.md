@@ -1,114 +1,21 @@
-# Project
+# Hostless Hui
 
-RMIT Hackathon 2026, Challenge 2: vibe code a working app with TideCloak. Brief, submission rules and checklist: `docs/challenge-2-brief.md`.
-Bun is the required runtime and package manager (project owner's decision): no npm, yarn, pnpm or node.
+Read `AGENTS.md` first. It is the canonical engineering, feature architecture, UI and security policy.
 
-Read `AGENTS.md` for the complete project rules: required shadcn/ui components, restrained dark/glass design, no generic AI-template styling, no emoji, Tide security boundaries and verification requirements.
+## Actual application stack
 
-# Bun conventions
+- Next.js App Router + React 19, running under Bun. Use `bun run dev`, `bun run build`, `bun run start`.
+- Tailwind v4 with shadcn/Radix primitives and locally bundled Geist fonts.
+- Feature modules under `src/features/{auth,circle,releases,governance,escrow}`.
+- Thin API routes under `src/app/api`; shared infrastructure only under `src/lib`.
+- TideCloak runs in Apple `container` at localhost:8080. Do not reset/delete realms or containers.
+- Never use master-admin credentials in application request handling.
 
-Default to using Bun instead of Node.js.
+## Evidence and verification
 
-- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
-- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
-- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Use `bunx <package> <command>` instead of `npx <package> <command>`
-- Bun automatically loads .env, so don't use dotenv.
-
-## APIs
-
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
-
-## Testing
-
-Use `bun test` to run tests.
-
-```ts#index.test.ts
-import { test, expect } from "bun:test";
-
-test("hello world", () => {
-  expect(1).toBe(1);
-});
-```
-
-## Frontend
-
-Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
-
-Server:
-
-```ts#index.ts
-import index from "./index.html"
-
-Bun.serve({
-  routes: {
-    "/": index,
-    "/api/users/:id": {
-      GET: (req) => {
-        return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
-  development: {
-    hmr: true,
-    console: true,
-  }
-})
-```
-
-HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
-
-```html#index.html
-<html>
-  <body>
-    <h1>Hello, world!</h1>
-    <script type="module" src="./frontend.tsx"></script>
-  </body>
-</html>
-```
-
-With the following `frontend.tsx`:
-
-```tsx#frontend.tsx
-import React from "react";
-import { createRoot } from "react-dom/client";
-
-// import .css files directly and it works
-import './index.css';
-
-const root = createRoot(document.body);
-
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
-}
-
-root.render(<Frontend />);
-```
-
-Then, run index.ts
-
-```sh
-bun --hot ./index.ts
-```
-
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
+- `bun run typecheck`, `bun run lint`, `bun test`, `bun run build`.
+- Exercise changed UI/API paths against the actual running app; no auth bypass for demo screenshots.
+- Use the exact local adapter `data/tidecloak.json`; raw setup responses and enrollment links stay in ignored `.cache/`.
+- Read `docs/setup-tidecloak.md` and the current plan before any bootstrap/IGA mutation.
+- Enrollment and quorum approvals require humans using distinct Tide identities. Do not fake approvals or signatures.
+- Synthetic money/escrow is intentional; crypto/auth enforcement must be real and claims must match observations.

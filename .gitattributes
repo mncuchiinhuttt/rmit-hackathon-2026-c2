@@ -1,0 +1,2 @@
+# Tide's reviewed enclave relay is checksum-bound; preserve upstream bytes.
+public/tide_dpop_auth.html -text whitespace=cr-at-eol

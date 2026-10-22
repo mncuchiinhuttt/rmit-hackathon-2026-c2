@@ -7,7 +7,7 @@
 - Implementation plan: `plans/20261022-1026-challenge-2-tidecloak-app/plan.md`.
 - Product direction: Hostless Hui, a savings-circle prototype with governed disclosure of encrypted release packages.
 - Build only the requested slice. Do not execute every plan phase when asked for one task.
-- Existing code is a Bun + React starter. Do not describe planned frameworks or libraries as installed.
+- Current code uses Next.js App Router + React 19 under Bun, Tailwind v4 and shadcn/Radix. Distinguish installed code from unverified live Tide capabilities.
 - Correctness first, then maintainability. Apply YAGNI, KISS and DRY.
 - Treat unexpected changes as the user's work; preserve them.
 
@@ -17,8 +17,8 @@
 - Use `bun install`, `bun run <script>` and `bun test`; no npm, yarn or pnpm lockfiles.
 - When a framework CLI would launch Node, use `bun run --bun <script>` or `bunx --bun <tool>`.
 - Do not silently fall back to Node when Bun compatibility fails; report the actual failure.
-- Current starter commands: `bun run dev`, `bun run build`, `bun run start`.
-- The Next.js Tide scaffold is a plan option, not an approved blanket migration.
+- Application commands: `bun run dev`, `bun run build`, `bun run start`; acceptance checks: `bun run typecheck`, `bun run lint`, `bun test`.
+- The user approved the Next.js Tide-scaffold cutover in the full cook plan. Do not introduce another framework or auth migration without a new requirement.
 - Inspect `package.json`, existing configuration and the lockfile before adding dependencies.
 - Review dependency provenance, compatibility and installation scripts before allowing them to run.
 - Install only packages required by the current slice. Prefer built-in Web/Bun APIs.
@@ -30,6 +30,11 @@
 - Keep authored code modules under 200 lines; split by responsibility, not arbitrary line ranges.
 - Use TypeScript and explicit domain types. Avoid `any` and unchecked external JSON casts.
 - Separate UI, domain logic, Tide integration, persistence and API authorization.
+- Organize by feature under `src/features/auth`, `circle`, `releases`, `governance` and `escrow`.
+- Keep each feature's types, UI, client hooks and server services together; route files are thin adapters.
+- Cross-feature imports use explicit feature contracts, not another feature's private persistence internals.
+- `src/components/ui` contains shared shadcn primitives only; `src/lib` is genuinely shared infrastructure.
+- Do not add generic factories, repositories or dependency-injection containers merely to claim scalability.
 - Reuse established project patterns. Do not create a second design system or auth stack.
 - Do not introduce generic repositories, event buses, queues or microservices for this prototype.
 - Keep changes focused. No unrelated cleanup or dependency upgrades.
@@ -149,3 +154,13 @@
 - Review code before commit. Update relevant setup docs, changelog and plan checkboxes from evidence.
 - Preserve human-only gates: enrollment, Terms acceptance and external form submission permission.
 - Claim only what was executed and observed. Separate planned, configured, verified and blocked states.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

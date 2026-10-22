@@ -1,0 +1,102 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+@theme inline {
+  --font-sans: "Geist Variable", sans-serif;
+  --font-mono: "Geist Mono Variable", monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-positive: var(--positive);
+  --color-warning: var(--warning);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  color-scheme: dark;
+  --background: #090a0f;
+  --foreground: #eef1f8;
+  --card: #10131c;
+  --card-foreground: #eef1f8;
+  --popover: #141827;
+  --popover-foreground: #eef1f8;
+  --primary: #f4f6fb;
+  --primary-foreground: #090a0f;
+  --secondary: #1a1e2a;
+  --secondary-foreground: #eef1f8;
+  --muted: #171a24;
+  --muted-foreground: #aab3c8;
+  --accent: #242a38;
+  --accent-foreground: #eef1f8;
+  --destructive: #fb7185;
+  --border: #293041;
+  --input: #353d50;
+  --ring: #e4e9f4;
+  --positive: #34d399;
+  --warning: #fbbf24;
+  --radius: 0.75rem;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  min-width: 320px;
+  background: var(--background);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: clip;
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse at 8% 0%, rgb(251 191 36 / 8%), transparent 36rem),
+    radial-gradient(ellipse at 90% 24%, rgb(52 211 153 / 6%), transparent 34rem);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgb(244 246 251 / 20%);
+  color: var(--foreground);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

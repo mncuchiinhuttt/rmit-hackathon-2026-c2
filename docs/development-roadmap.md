@@ -2,13 +2,21 @@
 
 | Milestone | State | Evidence / boundary |
 |---|---|---|
-| Competition brief and implementation plan | Written | `challenge-2-brief.md`, `../plans/20261022-1026-challenge-2-tidecloak-app/plan.md` |
-| Bun + React starter | Verified | Existing browser smoke; current TypeScript check and production bundle pass |
-| Project design and engineering rules | Written | `../AGENTS.md`; shadcn/ui required for future screens |
-| App realm, client and free-tier Tide licence | Verified | `setup-tidecloak.md`; live API verified active licence and vendor key |
-| Tide enrollment and governed role setup | Pending | No realm user accounts created by provisioning |
-| IGA quorum and policy encryption | Pending | Must measure effective threshold and real ORK denials |
-| Product UI and shadcn/ui setup | Pending | No framework cutover or component installation in the provisioning task |
-| README overview, demo video and public submission | Pending | Follow the official challenge checklist; repository remains private until authorized publication |
+| Competition brief and implementation plan | Written | `challenge-2-brief.md`; full plan remains in `../plans/20261022-1026-challenge-2-tidecloak-app/plan.md` |
+| Framework cutover and feature-first application | Implemented | Next.js 16.4.2, React 19.3.1, Bun 1.4 and Tailwind 4; feature boundaries in `system-architecture.md` |
+| shadcn/Radix UI and responsive UI | Implemented; probe complete | 375px probe had no issues; at 1280px only the required keyboard focus ring was flagged |
+| Realm, client and free-tier Tide licence | Verified | `setup-tidecloak.md`; live licence/vendor-key checks passed |
+| Keycloak demo-account preparation | Verified | Five realm accounts prepared; vendor user-count API separately reported 0 |
+| Tide identity enrollment | Pending human action | Latest `bun run tide:sync` reported 0/5 linked; private enrollment links are not included in docs |
+| First-admin activation and steward grants | Pending human action | `tide:activate` requires five linked accounts and three distinct steward keys; remaining grants/regeneration are not committed |
+| IGA quorum, signed policies and shared encryption/decryption | Implemented path; live acceptance pending | No observed quorum, successful signed-policy flow, shared release round trip or alternate-policy test |
+| Tide change-request history mapping | Implemented; payload smoke verified | Actual Tide shape mapped `entityId`/role rows to cycle `recordIds[]`; 269 approved records (244,463 bytes) parsed; denied `c4` request mapped to `payout-c4`, 0/1. Approval history is not current entitlement or end-user/quorum proof |
+| Automated verification | Final batch passed | Post-cleanup typecheck/lint/build passed; 15 tests/43 expectations across seven files. No outer-workspace warning |
+| Production dependency audit | Verified | After accidental root Playwright removal, production audit exited 0 with no vulnerabilities across 92 packages |
+| Full dependency audit | Outstanding dev-only advisory | `braces@3.0.3` high-severity advisory remains unpatched; full audit is not clean |
+| Production browser smoke | Completed with recorded limitation | 1280x900 and 375x812 no horizontal overflow; config 200, unauthenticated circle 401/no-store, relay 200; ORK sign-in reached without credentials. One Keycloak iframe abort and URL-wait timeout recorded in `../plans/20261022-1026-challenge-2-tidecloak-app/reports/production-smoke-2026-10-22.md` |
+| Public repository and challenge submission | Pending | Repository remains private; external form and submission confirmation are not complete |
 
-Realm/licence provisioning is one completed slice, not completion of the entire app plan.
+Realm/licence provisioning is one verified slice, not completion of the application or challenge
+acceptance. Keep human enrollment, IGA/quorum, live cryptographic behavior and submission states
+separate from implemented code paths.

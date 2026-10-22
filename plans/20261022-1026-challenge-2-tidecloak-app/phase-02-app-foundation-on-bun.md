@@ -1,89 +1,52 @@
-# Phase 02: Nền app trên Bun
+# Phase 02: App foundation on Bun
 
-## Context Links
+## Context links
 
-- `research/researcher-04-raziel-build-path.md` §1, §3, §4; mirror `.cache/raziel/scaffold/nextjs-e2ee-vault.md`, `.cache/raziel/templates/templates/{nextjs-e2ee-vault,dpop-verify,relationship-attestation}/`, `.cache/raziel/canon/{invariants,version-policy,redirect-handler,tidecloak-bootstrap}.md`
-- Quy tắc repo: `CLAUDE.md` (Bun), file < 200 dòng, kebab-case.
+- `research/researcher-04-raziel-build-path.md` §1, §3–§4
+- Current repo rules: `../../AGENTS.md`
+- Verification evidence: `reports/verification-tests-2026-10-22.md`
 
 ## Overview
 
-- Priority: P1 · Status: Pending · 12:20–13:40 · Workstream **B** · **G2b 13:40**
-- Thay starter bằng scaffold Tide chạy dưới Bun; login + DPoP + verify JWT thật; khung lưu ciphertext/policy **tái dùng mẫu của scaffold**.
+- Priority: P1 · Status: code cutover and feature-first app implemented; live Tide authentication acceptance remains unproven.
+- Runtime and package manager: Bun 1.4.0. Actual framework: Next 16.4.2, React 19.3.1, Tailwind 4.3.3. The old Bun starter is retained at tag `starter-bun`.
+- Local shadcn/Radix primitives, Geist and Lucide are present; the actual app is not the planned flat vault scaffold.
 
-## Key Insights
+## Actual architecture
 
-- Đường A (khuyến nghị): scaffold `nextjs-e2ee-vault` có provider, `/auth/redirect`, route DPoP + CSP, `withAuth/withRole`, route vault lưu ciphertext bằng JSON file (`src/app/api/vault/route.ts`). Ghim `@tidecloak/nextjs@0.14.17`, `next dev --webpack`; **không nâng version**. Độ tương thích Bun 1.4 + Next 16 là **[UNVERIFIED]**.
-- Gate đúng nghĩa cần **adapter thật**: `providers.tsx` import tĩnh `data/tidecloak.json`; thư mục `data/` chỉ có `.gitkeep`. Trước khi adapter có (phase 01 xuất sớm ~12:45), dùng **placeholder biên dịch** theo `tidecloak-bootstrap.md:38` để tách lỗi scaffold khỏi lỗi Bun.
-- Đường B (dự phòng) là một **implementation thứ hai**, giới hạn **60 phút** và phải qua trọn gói: login + route bảo vệ + DPoP. Skeleton ở research-04 §4. `import index from "./index.html"` là `HTMLBundle`, không đặt header trực tiếp được.
-- `public/tide_dpop_auth.html` phải chép nguyên byte, SHA-256 `9d7844b938f0a2565fa910d3d30e9b8797cbfd6e0b73d59d804169a089aea757` (9.120 byte; đã kiểm bản trong pack). Checker nằm ở pack: `.cache/raziel/templates/scripts/check-dpop-asset.sh`, không nằm trong repo sau khi copy.
-- Bun không chạy lifecycle script mặc định; file `silent-check-sso.html` đã có sẵn trong template.
-- Hoãn tới phase 05 nếu dư giờ: token-bucket, idempotency generic, events API, test hạ tầng (không nằm trên đường găng chứng minh quorum).
+Product features are under `src/features/{auth,circle,releases,governance,escrow}`. Route adapters are under `src/app/api`; shared infrastructure is under `src/lib`. UI components are feature-local, while `src/components/ui` holds shared primitives.
 
-## Requirements
+Auth verification paths include `src/features/auth/server/{with-auth.ts,verify-tide-jwt.ts,verify-dpop.ts,identity.ts}`. Existing route paths include `/api/config`, `/api/circle`, `/api/governance`, `/api/admin-policy`, `/api/policies`, `/api/payouts`, `/api/escrow/redeem` and `/api/members`. This is the current source layout; do not reintroduce the planned `src/lib/auth`, generic vault route or flat Bun starter paths.
 
-- `bun install && bun run --bun dev` lên `http://localhost:3000`; login Tide hoàn tất; API bảo vệ trả 401/403/200 đúng.
-- Lưu: ciphertext và policy đã ký trong `data/store.json` qua `node:fs` (chạy được dưới Bun và Node); policy phục vụ **mọi thành viên đã xác thực** (metadata công khai trong circle) để phép thử từ chối thật sự đến từ ORK (xem phase 03).
+## Verification evidence
 
-## Architecture
+| Check | Observed result | Limit |
+|---|---|---|
+| Final post-cleanup `bun run typecheck` | Exit 0. | Does not prove live Tide auth. |
+| Final post-cleanup `bun run lint` | Exit 0. | Does not prove live Tide auth. |
+| Final post-cleanup `bun test` | Exit 0; 15 tests across 7 files, 43 expectations, 0 failures. | Synthetic fixtures do not establish human or live E2EE behavior. |
+| Final post-cleanup `bun run build` | Exit 0; no outer-workspace warning. | Build does not prove protected runtime behavior. |
+| Production `bun run start` | Next ready on loopback in 156 ms. | Only unauthenticated public surface exercised. |
+| `GET /api/config` / unauthenticated `GET /api/circle` | 200 / 401 with `Cache-Control: no-store`. | Public config and expected denial only; no protected success. |
+| `GET /tide_dpop/auth` | 200; 9,120 bytes; SHA-256 `9d7844b938f0a2565fa910d3d30e9b8797cbfd6e0b73d59d804169a089aea757`. | Relay asset integrity/CSP checked; not an authenticated sign-in. |
+| Real sign-in navigation | Click reached `ork1.tideprotocol.com`, title “Tide”, with sign-in form visible. | No credentials entered. One Keycloak iframe request aborted and a URL wait timed out; later destination inspection confirmed the sign-in page. |
+| Earlier isolated `tests/auth-crypto-boundary.test.ts` | Exit 0; 1 test / 2 expectations; targeted ESLint passed. | Ephemeral EdDSA issuer and ES256 DPoP keys, synthetic claims; not a Tide issuer or enrolled user. |
 
-```mermaid
-flowchart TB
-  subgraph Browser["Browser người dùng (plaintext chỉ ở đây)"]
-    UI[React UI] --> SDK[Tide SDK: login, encrypt, decrypt, enclave]
-  end
-  subgraph Fabric["Tide Fabric: các ORK độc lập"]
-    ORK[ORK kiểm policy + role + subject trước khi nhả key share]
-  end
-  subgraph Host["Host của ta: không tin cho bí mật"]
-    API[API: verify JWT + DPoP, lưu ciphertext + policy]
-    DB[(store.json: ciphertext, policy đã ký)]
-    TC[TideCloak: IAM + IGA]
-  end
-  SDK <--> ORK
-  UI -->|Bearer + DPoP| API --> DB
-  UI -->|Tide Console / token steward: đề xuất, duyệt| TC
-```
+The isolated crypto test observed valid fixture requests as 200; replay, missing DPoP, Bearer scheme, wrong `htu`, wrong `azp` and expired token as 401; a realm-role/other-client role spoof as 403. Production smoke observed no `kcToken` cookie on the app origin; this unauthenticated check does not replace the separate SDK cookie-setter test. Full output and limits are in `reports/production-smoke-2026-10-22.md` and `reports/governance-verification-2026-10-22.md`.
+## Current checklist
 
-Mô hình dữ liệu tối thiểu: `payouts[{recordId, ciphertext, sealedAt}]`, `policies[{subjectType, subjectId, recordId, policyBytes(base64)}]`, `escrow[{cycle, beneficiarySub, codeHash, paid}]` (mock). Không lưu plaintext/token/doken. Đánh đổi: một node, CP, không Kafka/sharding (YAGNI); đường mở rộng: JSON → Postgres, replay-store DPoP sang Redis, API stateless.
+- [x] Old starter cut over; preserved at tag `starter-bun`.
+- [x] Next/React/Bun implementation, Tailwind, shared UI primitives and feature-first routes present.
+- [x] Server auth/DPoP/JWT boundaries and protected routes implemented.
+- [x] Latest post-review typecheck, lint, full test batch (15 tests / 43 expectations) and build passed as recorded.
+- [ ] Complete a real Tide sign-in with an enrolled human; blocked on 0/5 linked accounts.
+- [ ] Observe an authenticated protected success (200) alongside intended 401/403 on the live app; not observed.
+- [ ] Treat G2 as unachieved until live account proof exists.
 
-## Related Code Files
+## Security boundary
 
-- Xóa (cutover, sau khi G2a đạt; đặt tag `starter-bun` trước): `src/index.ts`, `src/App.tsx`, `src/APITester.tsx`, `src/frontend.tsx`, `src/index.html`, `src/index.css`, `src/*.svg`, `bunfig.toml`, `bun-env.d.ts`, `tsconfig.json`, `package.json`, `bun.lock`
-- Từ template (`cp -Rn`, không ghi đè `README.md`, `.gitignore`, `CLAUDE.md`): `next.config.ts`, `public/{silent-check-sso,tide_dpop_auth}.html`, `src/app/{layout,providers}.tsx`, `src/app/auth/redirect/page.tsx`, `src/lib/auth/{middleware,tideJWT,tidecloakConfig,verifyDpop}.ts`, `src/app/api/vault/route.ts` (mẫu)
-- Tạo (B): `src/lib/store/json-store.ts` (từ mẫu vault), `src/lib/tide/relationship.ts` (chép từ pack), `src/app/api/{payouts,policies,escrow}/route.ts`
-- Sửa: `package.json` (`name: hostless-hui`), `.gitignore` (gộp)
+No master-admin credential is used in app runtime. The crypto test generates ephemeral keys and synthetic claims in a child process. No live token, doken, plaintext release, invite URL or private adapter material is represented by those tests. UI visibility does not replace server authorization.
 
-## Implementation Steps
+## Scope note
 
-1. Đặt `git tag starter-bun` (commit `a9bf6e8` đã chứa starter); xóa starter và copy scaffold; commit.
-2. **G2a (~12:35):** đặt `data/tidecloak.json` placeholder đúng chỉ dẫn canon; `bun install`; `bun run --bun dev`; kiểm server lên, `/` render, `/auth/redirect` 200, route DPoP 200 + `Content-Security-Policy` + `Allow-CSP-From: *`; chạy checker của pack. Đỏ do thiếu adapter ≠ đỏ do Bun: phân biệt trước khi đổi đường.
-3. Gọi Raziel trước khi viết code Tide (`tide_choose_playbook`, `tide_doctor`); đọc `tide_adapter AGENTS`.
-4. Khi adapter thật có (~12:45): `tide-doctor.sh` đến `RESULT: OK`; **G2b (≤ 13:40):** một login thật + gọi API bảo vệ bằng DPoP (401/403/200). Đỏ ở G2b ⇒ mở đường B với **trần 60 phút** (xong ≤ 14:40), song song không làm UI.
-5. Viết `json-store.ts` (ghi nguyên tử bằng file tạm + rename), seed circle/cycle giả, route payouts/policies/escrow (role `withRole`), chỉ phần cần cho B0.
-6. Cấu hình Tailwind v4 và **shadcn/ui bắt buộc** cho framework thực sự được chọn; đọc `AGENTS.md`, kiểm `components.json`/component sẵn có rồi dùng CLI chính thức qua Bun, chỉ thêm Button, Card, Dialog, Alert, Badge, Skeleton và Progress khi màn hình cần. Dùng chung `cn()` và token, không tự dựng primitive tương đương. Geist + Lucide giữ theo plan; không cài cả registry. Kiểm dung lượng ổ sau cài (≥ 5 GB trống).
-7. Commit nhỏ, thường xuyên.
-
-## Todo List
-
-- [ ] Tag + cutover; G2a
-- [ ] Adapter thật; `tide-doctor` OK
-- [ ] G2b login + API dưới Bun (hoặc đường B ≤ 60 phút)
-- [ ] Store + route payouts/policies/escrow tối thiểu
-
-## Success Criteria
-
-- Một người dùng đăng nhập Tide thật và gọi API được bảo vệ dưới Bun; 401/403/200 đúng; mỗi file < 200 dòng; không còn code starter.
-
-## Risk Assessment
-
-- Next 16 + Bun lỗi: đường B (60 phút); không tự chuyển sang Node nếu chưa hỏi người dùng (yêu cầu Bun).
-- Asset DPoP sai nhưng trả 200: dùng checker của pack (AP-62/GAP-068).
-- Máy yếu: chạy một dev server, đóng tab thừa; không chạy song song build + dev.
-
-## Security Considerations
-
-- Mọi route bảo vệ qua `withAuth/withRole` (JWT EdDSA `createLocalJWKSet(config.jwk)`, `azp`, hết hạn, DPoP `cnf.jkt`, `jti` replay); ẩn nút ở UI không phải bảo vệ. Không `NEXT_PUBLIC_*` chứa bí mật; không log token/ciphertext đầy đủ; CSP của template chỉ là `frame-src 'self' *` nên **không** chặn script lạ (giả định client chân thực, ghi vào tài liệu); CORS cùng origin. Giới hạn kích thước body ở route ghi.
-
-## Next Steps
-
-Phase 03 dùng adapter + store + `relationship.ts`; phase 04 dùng route và seed.
+The implementation is already feature-first; do not revert to the planned generic vault scaffold or create a second auth/store architecture. This phase records implementation and evidence; it does not assert the still-unobserved Tide identity flow.

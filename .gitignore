@@ -25,6 +25,11 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # Local TideCloak configuration and state
 data/tidecloak.json
 data/keycloakdb*
+data/hostless-hui.json
+data/hostless-hui.json.*
+data/.hostless-hui.*.tmp
+.next/
+next-env.d.ts
 .tide-pack/
 
 # caches

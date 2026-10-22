@@ -1,9 +1,8 @@
 ---
-title: "Challenge 2 (Tide UNLOCKED): Hostless Hụi, vòng hụi không ai tự mở được payout"
-description: "Prototype TideCloak cho RMIT Hackathon Challenge 2: gói release của payout hụi được mã hóa E2EE, chỉ mở khi quorum steward duyệt; steward duyệt nhưng không đọc được."
+title: "Challenge 2 (Tide UNLOCKED): Hostless Hụi"
+description: "Savings-circle prototype: governed disclosure of encrypted release packages; implementation, live evidence and human acceptance are tracked separately."
 status: in-progress
 priority: P1
-effort: 5.75h wall-clock (12:00–17:45, workstreams song song)
 branch: main
 tags: [feature, frontend, backend, auth, security, experimental]
 created: 2026-10-22
@@ -11,65 +10,45 @@ created: 2026-10-22
 
 # Hostless Hụi: a savings circle where no host, platform or single steward can open the payout
 
-## Mục tiêu và hạn
+## Purpose and evidence rule
 
-Nộp **trước 17:45 giờ VN** (hạn 18:00, 22/10/2026) qua https://forms.gle/HRHYjnqB86j1LFS97: repo GitHub **public** có code chạy thật với TideCloak, **video 2 phút `.mp4` < 100 MB** trong repo, README mở đầu bằng Project overview **≤ 300 từ** trả lời 5 prompt. Nguồn: https://tide.org/unlocked/ (đọc 22/10/2026).
+The challenge asks for a working TideCloak-backed prototype, public repository, video, README answers and form submission. Original event-time gates have elapsed and are historical, not active acceptance criteria. This sync-back records evidence only; no phase or submission is marked complete solely because code exists.
 
-Chấm điểm: Vision & originality 25% · Trust constraint 20% · Value & impact 20% · Why TideCloak 20% · Prototype & storytelling 15%. Bài test: *"nếu chạy y hệt với ordinary login + backend permissions thì phải phát triển thêm"*. Tránh: login demo, security tool, generic access-control dashboard.
+The product concept remains: each circle cycle has a separate encrypted release package. Stewards may approve governed access, the winner may read after access is granted, and the host/operator should not be able to decrypt. Money, contributions and escrow are synthetic. No live policy signing, encryption or decryption flow has been exercised; these remain intended properties, not demonstrated results.
 
-## Ý tưởng (đã thu hẹp sau red team)
+## Current status by phase
 
-Hụi do chủ hụi nắm tiền và quyền quyết định giải ngân; "vỡ hụi" xảy ra khi người đó biến mất hay thiên vị. Mỗi chu kỳ có **gói release** riêng (mã rút tiền ở escrow giả lập) được mã hóa E2EE bằng policy TideCloak: server chỉ giữ ciphertext; **steward duyệt nhưng không đọc được; người thắng đọc được nhưng không tự duyệt được**; quyền giải mã được cấp bằng **đổi role có quorum (IGA)** và chỉ cho đúng một chu kỳ. Tiền và escrow là **mock**; kiểm tra quyền là **thật**. Điểm khác biệt hụi: quyền **xoay vòng theo chu kỳ**, không tích tụ ở một người.
-
-Giới hạn nói thẳng (phải có trong README/docs): giả định client code chân thực (không chống được operator phát JS độc); quorum steward có thể thông đồng; quorum chỉ **ủy quyền truy cập gói release**, không ràng buộc nội dung giao dịch; TideCloak master-realm admin có đường recovery tắt IGA (docs của Tide), ta không tuyên bố gì về nó trừ khi đã đo.
-
-Đồng hồ lúc lập plan: **11:18 giờ VN**. Mốc giờ trong bảng là **cổng cứng** (không dời muộn hơn); bắt đầu phase 00 ngay thì ~40 phút dư ở đầu dành cho enrol (phần chậm nhất, cần người thật) và làm đệm.
-
-## Phases
-
-| # | Phase | Cửa sổ (giờ VN) | Trạng thái | Gate |
-|---|---|---|---|---|
-| 0 | [Cổng người dùng, idea, nộp bài](phase-00-idea-story-and-gates.md) | 12:00–12:20 | Pending | email licence + T&C + thông tin nộp bài |
-| 1 | [Realm TideCloak, enrol, quorum](phase-01-tidecloak-realm-and-enrolment.md) | 12:20–14:00 | In progress: realm + licence verified; enrol/IGA pending | G1 14:00: 3 steward linked, ngưỡng đo được |
-| 2 | [Nền app trên Bun](phase-02-app-foundation-on-bun.md) | 12:20–13:40 | Pending | G2b 13:40: login thật + API dưới Bun |
-| 3 | [Lõi payout niêm phong](phase-03-sealed-payout-core-spike.md) | 13:45–15:15 | Pending | G1.5 13:50 (RA probe), G3 15:15 |
-| 4 | [UI sản phẩm](phase-04-product-ui-and-approvals.md) | 13:40–16:15 | Pending | đóng băng 16:15 |
-| 5 | [Hardening, docs, an toàn nộp](phase-05-hardening-docs-rehearsal.md) | 15:15–16:45 (xen kẽ) | Pending | public + form baseline 15:45 |
-| 6 | [Video và nộp bài](phase-06-video-and-submission.md) | 16:45–17:45 | Pending | form xác nhận 17:30 |
-
-Nghiên cứu nền: `research/researcher-01..04-*.md`. Red team: `reports/red-team-review.md`. Mirror Tide Raziel ở `.cache/raziel/` (gitignored); gọi `https://mcp.tide.org/mcp` bằng JSON-RPC khi cần bản mới.
-
-Verified setup: [setup-tidecloak](../../docs/setup-tidecloak.md). Project rules: [AGENTS.md](../../AGENTS.md), including required shadcn/ui components. Realm/licence provisioning does not mark enrollment, quorum or the webapp complete.
-
-## Thang suy giảm (một hạn, một điều kiện đạt)
-
-| Level | Demo thật | Quyết định |
+| Phase | Observed state | Acceptance still open |
 |---|---|---|
-| **B0 (cốt lõi, không cắt)** | Một circle cố định, một record: operator chỉ thấy ciphertext; steward và người chưa được cấp bị ORK từ chối; **quorum duyệt trong Tide Console**; người thắng giải mã; redeem escrow giả lập | G3 15:15 |
-| B1 | Panel trạng thái đọc-chỉ (số phiếu, CR), thanh stage, UI dark glass đầy đủ | 16:15 |
-| B2 (stretch) | Duyệt/đề xuất ngay trong app (REST + enclave), nhiều chu kỳ, i18n | chỉ khi G3 xong trước 14:45 |
+| [0 · Idea and human gates](phase-00-idea-story-and-gates.md) | Four-person team and group name confirmed; private consent/licence details remain private. README overview finalized at 249 words. | Human-to-account links, primary/backup form submitter and form submission. |
+| [1 · Tide realm](phase-01-tidecloak-realm-and-enrolment.md) | `hui-rmit26`, client, licence and baseline IGA verified; five account aliases/roles prepared; private adapter exists. | Latest `bun run tide:sync` at 12:57 returned 0/5 linked. First-admin activation, distinct steward keys, remaining grants and measured quorum are unproven. |
+| [2 · App foundation](phase-02-app-foundation-on-bun.md) | Feature-first app implemented. Latest typecheck, lint, 15-test suite and production build passed; production routes, relay asset and unauthenticated browser surface were inspected. | No credentialed Tide sign-in or authenticated protected success; sign-in navigation reached the ORK form without credentials. |
+| [3 · Sealed payout core](phase-03-sealed-payout-core-spike.md) | Release, policy, governance and escrow paths exist. Governance-history mapping and a denied, unapplied FirstAdmin grant request were observed. | G3 unmet: no live signed policy, ORK encryption/decryption/refusal, human quorum or redeem flow. |
+| [4 · Product UI](phase-04-product-ui-and-approvals.md) | Production login workspace inspected at 1280px and 375px; no horizontal overflow; refreshed unauthenticated login screenshots. | Protected states and authenticated screenshots remain unverified. |
+| [5 · Hardening and docs](phase-05-hardening-docs-rehearsal.md) | Final source/dependency batch passed; README/docs reconciled; scoped code and governance reviews passed without remaining findings. | Secret/history review, commit/push and fresh-clone build remain pending; repository remains private. Full dev audit has one unpatched finding. |
+| [6 · Video and submission](phase-06-video-and-submission.md) | Demo script/checklist exist; README overview is 249 words. | No final video, public repository or form confirmation. |
 
-Luật cắt: **15:15** chưa qua G3 ⇒ khóa phần đã chứng minh được, sửa README theo số đo (không bịa), chuyển toàn lực sang video; **16:15** đóng băng tính năng; **16:45** quay dù thiếu gì. Nếu G1.5 (RA probe) đỏ lúc 13:50: hỏi Tide ngay tại sự kiện/Discord; **14:30** vẫn đỏ ⇒ Plan Z trong phase 03 (đổi vỏ domain hoặc thu hẹp story).
+## Stack and implementation
 
-## Quyết định then chốt
+Actual stack: Bun 1.4, Next 16.4.2, React 19.3.1, Tailwind 4.3.3, local shadcn/Radix primitives, Geist and Lucide. The old Bun starter was cut over and retained at tag `starter-bun`. Product code is feature-first under `src/features/{auth,circle,releases,governance,escrow}` with thin `src/app` routes; old flat-starter paths and the planned generic vault route are not current architecture.
 
-- Bun (runtime + package manager). Đường A: scaffold Tide `nextjs-e2ee-vault` chạy dưới Bun (`bun run --bun dev`); đường B giới hạn **60 phút**: `Bun.serve` + React 19 + `jose` + `verifyDpop.ts`. Giữ starter ở tag `starter-bun` tới khi G2b đạt.
-- Realm mới `hui-rmit26`; **không đụng `myrealm`**; không chạy `init-tidecloak.sh` (wipe Docker/H2). **Không dùng master-admin token trong runtime của app** (AP-G08); đề xuất/duyệt ở Tide Console (B0) hoặc bằng token steward (B2).
-- Không để ai giữ `_tide_decryptor` thường trực: release CR cấp `_tide_decryptor` + `hui-cN-winner`, kết thúc chu kỳ thì thu hồi.
-- Lưu trữ: tái dùng mẫu route vault của scaffold (JSON file qua `node:fs`); không SQLite, không token-bucket/idempotency generic (nếu dư giờ ở phase 05).
-- Phong cách UI: dark obsidian + glass + glow; **wireframe A cố định**, tiếng Anh, không cổng chọn.
+The app has no master-admin runtime credential. Repository/config setup, human enrollment, IGA quorum and actual E2EE are separate facts. Escrow and money remain mock. Known limitations include the authentic-client assumption, steward collusion risk, and that quorum would authorize access to a package rather than validate transaction contents or move funds.
 
-## Nhân sự (đã chốt 22/10: 4 người; group name `RMIT_SGS_Gay_Hackers_C2` đã được đội xác nhận)
+## Verification snapshot
 
-- **4 người:** T (Tide ops, enrol, quorum), B (backend + tích hợp, lái G2b/G3), F (UI), S (README, kịch bản, video, thông tin nộp). 5 tài khoản = 4 người + một người giữ 2 profile.
-- **2 người:** [T+B] và [F+S]; F chỉ bắt đầu khi B xong G2b.
-- **1 người (lái duy nhất):** P0 → P1a/P2a (xen kẽ chờ enrol) → G2b → G1.5 → G3 → khoác skin UI mỏng trên scaffold (không dựng mock riêng) → README → video. Enrol 5 tài khoản vẫn cần người thật trên browser: tự làm tuần tự (≈ 3–5 phút/tài khoản).
-Ownership file: **T** `scripts/tide/**`, `docs/setup-tidecloak.md`; **B** `src/lib/**`, `src/app/api/**`, `next.config.ts`, `public/*.html`; **F** `src/app/**/page.tsx`, `src/components/**`, `src/app/globals.css`; **S** `README.md`, `demo/**`, `docs/**` còn lại. File < 200 dòng, kebab-case.
+The latest post-review batch passed `bun run typecheck`, `bun run lint`, `bun test` (15 tests across 7 files, 43 expectations) and `bun run build`, all exit 0. Production dependency audit reported 0 vulnerabilities across 92 packages. Full development audit still reports the unpatched high-severity `braces@3.0.3` finding. See [governance verification](reports/governance-verification-2026-10-22.md) and [production smoke](reports/production-smoke-2026-10-22.md).
 
-## Red Team Review
+Production smoke: `bun run start` was ready in 156 ms; `/api/config` returned 200, unauthenticated `/api/circle` returned 401 with `no-store`, and `/tide_dpop/auth` returned 200 with the expected 9,120-byte asset/hash. Real sign-in navigation reached the ORK sign-in screen, but no credentials were entered. One Keycloak iframe request aborted and a URL wait timed out; neither is concealed as a clean-console claim. These observations do not prove authenticated access or E2EE.
 
-Phiên 2026-10-22: 4 reviewer, 34 phát hiện thô ⇒ **22 sau gộp (6 Critical, 15 High, 1 Medium)**; 20 chấp nhận, 2 chấp nhận một phần, 0 bác. Chi tiết: `reports/red-team-review.md`. Thay đổi lớn: bỏ master token khỏi runtime; không còn quyền giải mã thường trực; thêm probe RA sớm (G1.5); thu hẹp tuyên bố; thêm escrow mock có redeem; ngân sách chu kỳ; public + form baseline 15:45; bỏ hạ tầng generic và tính năng B2 khỏi đường găng.
+## Unresolved acceptance and human dependencies
 
-## Lệnh tiếp tục
+- Five invitees must complete enrollment; latest synchronization observed 0/5 linked.
+- First-admin activation, distinct steward keys, remaining admin grants and an actual quorum are not verified.
+- Live policy signing, same-policy/same-ciphertext ORK denial and authorized decryption/redemption, role propagation, and alternate-policy/master experiments remain untested.
+- Protected-state screenshots, end-to-end video, authorized public visibility and form confirmation are absent.
+- Secret/history review, private git commit/push and clean-checkout build remain pending. Keep emails, invite URLs, credentials, tokens, private adapter content and consent details out of tracked or public materials.
 
-`/ck:cook /Users/vominhlong/rmit-hackathon-2026-c2/plans/20261022-1026-challenge-2-tidecloak-app/plan.md`
+## Phase references
+
+- [Phase 00](phase-00-idea-story-and-gates.md) · [Phase 01](phase-01-tidecloak-realm-and-enrolment.md) · [Phase 02](phase-02-app-foundation-on-bun.md)
+- [Phase 03](phase-03-sealed-payout-core-spike.md) · [Phase 04](phase-04-product-ui-and-approvals.md) · [Phase 05](phase-05-hardening-docs-rehearsal.md) · [Phase 06](phase-06-video-and-submission.md)

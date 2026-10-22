@@ -2,23 +2,41 @@
 
 ## 2026-10-22
 
-### Infrastructure
+### Infrastructure and Tide realm
 
-- Created development realm `hui-rmit26` and public client `hui-rmit26-client` on the existing TideCloak server.
-- Activated the free-tier Tide licence after explicit user consent; verified the licence and vendor-key expiry through live API responses.
-- Preserved the existing `myrealm`; no container recreation or paid checkout.
-- Resolved container DNS failure using the Wi-Fi-provided resolver; safely recovered only empty resources left by the failed setup.
-- Added Bun provisioning/verification commands, the reviewed realm template and an empty `.env.example`.
-- Kept private credentials, emails, raw licence/key responses and recovery backups ignored.
+- Created and verified realm `hui-rmit26` and client `hui-rmit26-client` on the existing local TideCloak server; the free-tier licence and vendor-key expiry were verified through live API responses.
+- Preserved `myrealm`; no paid checkout or container recreation occurred. Container DNS was corrected using the Wi-Fi-provided resolver; the one-time recovery removed only empty partial resources and is not a reset procedure.
+- Added Bun provisioning/verification scripts and the reviewed realm template. Bootstrap credentials, personal email/consent details, raw responses and recovery backups remain private.
+- Prepared five Keycloak demo accounts. The latest `bun run tide:sync` returned 0/5 Tide-linked identities. The separate vendor user-count API reported 0; it is not the Keycloak `/users` account count or linked-identity count.
+- `bun run tide:prepare` generated private local enrollment material and the ignored adapter. Invitation links are not included in tracked files.
 
-### Project rules
+### Application and UI
 
-- Added `AGENTS.md`: Bun-only workflow, architecture, security, honest Tide claims and verification requirements.
-- Required shadcn/ui components for future UI implementation; no generic AI-template visuals or emojis.
-- Defined restrained gradients/glass, typography, contrast, accessibility and interaction rules.
-- Linked existing agent guidance and implementation phases to the new rules.
+- Replaced the initial Bun starter with a feature-first Next.js 16.4.2 App Router application using Bun 1.4, React 19.3.1 and Tailwind CSS 4.
+- Installed and used shadcn/Radix UI primitives; product UI, client actions, services and types are organized under auth, circle, releases, governance and escrow features, with thin API route adapters.
+- Public config returned 200, an unauthenticated protected circle request returned 401, and browser navigation reached the real Tide sign-in/ORK form without entering credentials.
+- The final UI probe reported no issues at 375px. At 1280px its only flag was the intentionally retained keyboard focus ring, required by project accessibility rules.
 
-### Status
+### Tide governance history
 
-- Realm/licence setup is verified. The app is still the Bun + React starter.
-- User enrollment, IGA quorum, E2EE application integration and shadcn/ui installation remain pending.
+- Implemented the actual Tide change-request shape: `entityId` is a user UUID; each row carries `ROLE_ID` and `USER_ID`. The read model fetches pending/approved requests and roles with the caller token, then maps exact role UUID/name to one or more cycle `recordIds[]`.
+- UI status now says Tide approval history; “Approved” does not claim current role entitlement.
+- Payload smoke parsed a 269-record approved history (244,463 bytes) under the 1 MiB upstream cap while public inputs remain capped at 64 KiB. A harmless `c4` proposal was created, inspected, then denied without authorization; its denied change request mapped to `payout-c4`, 0/1 approved.
+- This confirms history parsing/mapping only. It does not prove end-user enrollment, steward quorum or a live release.
+
+### Verification and security
+
+- The final post-cleanup batch passed typecheck, lint, production build and 15 tests across seven files with 43 expectations; all exited 0 without the earlier outer-pnpm-workspace warning. See `../plans/20261022-1026-challenge-2-tidecloak-app/reports/governance-verification-2026-10-22.md`.
+- Production browser smoke at 1280x900 and 375x812 had no horizontal overflow; public config returned 200, unauthenticated circle returned 401 with `no-store`, and the reviewed relay returned 200. Sign-in reached the ORK with no credentials entered. One Keycloak iframe `ERR_ABORTED` and URL-wait timeout were observed; see `../plans/20261022-1026-challenge-2-tidecloak-app/reports/production-smoke-2026-10-22.md`. No claim of zero browser errors.
+- A later unused-import fix passed targeted ESLint.
+- Review fixes include DPoP replay-JTI retention through `iat` plus allowed skew, fresh demo-user mapping after `tide:sync`, a logout epoch that blocks late plaintext reopening, and dialog focus restoration. The replay-TTL scenario failed before and passed after its fix.
+- A committed, persistent Bun patch for pinned `@tidecloak/js@0.14.33` covers ESM and CJS, disables optional JavaScript-readable `kcToken` persistence by clearing the legacy cookie, and preserves front-channel login, DPoP and E2EE. SDK cookie smoke passed on both bundles; keep the patch while this version is pinned.
+- After removing accidental root Playwright, `bun audit --production` exited 0 with no vulnerabilities across 92 packages. The full audit still reports the unpatched dev-only `braces@3.0.3` advisory described in `system-architecture.md`.
+
+### Remaining acceptance and submission gates
+
+- Human enrollment of all five accounts, distinct steward identities, first-admin activation, remaining admin grants and admin-policy regeneration remain pending.
+- No actual quorum, successful enclave-signed policy, shared encryption/decryption, alternate-policy/master-recovery experiment or authenticated protected-state screenshot is verified.
+- Money movement and escrow are synthetic. No real payment custody or theft-proof guarantee is claimed.
+- Available login screenshots may be an earlier copy; no protected-state screenshots or final demo video are claimed as verified.
+- The repository remains private. Public publication, external form submission and final submission confirmation have not occurred.

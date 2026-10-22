@@ -1,0 +1,38 @@
+diff --git a/dist/cjs/src/IAMService.js b/dist/cjs/src/IAMService.js
+index 2db536bd1cf6cfff9bb3a362708230bbf06c2107..5ef07adcf25ce40660d08b78f4b90859341130bb 100644
+--- a/dist/cjs/src/IAMService.js
++++ b/dist/cjs/src/IAMService.js
+@@ -627,10 +627,10 @@ class IAMService {
+      * marks it `Secure` whenever the page is served over HTTPS.
+      * @private
+      */
+-    _setTokenCookie(token) {
+-        var _a;
+-        const secure = typeof window !== "undefined" && ((_a = window.location) === null || _a === void 0 ? void 0 : _a.protocol) === "https:" ? "; Secure" : "";
+-        document.cookie = `kcToken=${token}; path=/; SameSite=Lax${secure}`;
++    _setTokenCookie(_token) {
++        // Hostless Hui uses DPoP headers, not the optional JS-readable middleware token cookie.
++        // Clear legacy copies without disabling front-channel credentials or client doken/E2EE.
++        this._clearTokenCookie();
+     }
+     /** @private */
+     _clearTokenCookie() {
+diff --git a/dist/esm/src/IAMService.js b/dist/esm/src/IAMService.js
+index 3222dcc6b21817a00324f585e5fdeffc970f4a09..a9d6e9460e4ff38762c0f45dc94c7bbfca8565bf 100644
+--- a/dist/esm/src/IAMService.js
++++ b/dist/esm/src/IAMService.js
+@@ -591,10 +591,10 @@ class IAMService {
+      * marks it `Secure` whenever the page is served over HTTPS.
+      * @private
+      */
+-    _setTokenCookie(token) {
+-        var _a;
+-        const secure = typeof window !== "undefined" && ((_a = window.location) === null || _a === void 0 ? void 0 : _a.protocol) === "https:" ? "; Secure" : "";
+-        document.cookie = `kcToken=${token}; path=/; SameSite=Lax${secure}`;
++    _setTokenCookie(_token) {
++        // Hostless Hui uses DPoP headers, not the optional JS-readable middleware token cookie.
++        // Clear legacy copies without disabling front-channel credentials or client doken/E2EE.
++        this._clearTokenCookie();
+     }
+     /** @private */
+     _clearTokenCookie() {
