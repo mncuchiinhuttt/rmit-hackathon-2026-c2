@@ -1,0 +1,15 @@
+# SQLite simulation verification
+
+Scope: explicitly enabled localhost development workflow, not real Tide identity/cryptographic acceptance.
+
+- Typecheck, lint and production build completed successfully under Bun. Built-in Next webpack configuration already externalizes `bun:sqlite`; no extra dependency, driver binary or custom bundler workaround was needed.
+- `bun test`: 31 passed, 0 failed, 11 files, 142 expectations. New checks cover saved state/history/session after database reopen, independent DB connections, wrong-role/signed-out denial, duplicate approvals, cycle isolation, single redemption, session rotation/revocation, request spoof/Origin rejection, failed-write rollback and newer-schema rejection without reset.
+- Actual HTTP smoke used independent opaque sample cookies: anonymous GET showed no state; cross-origin sign-in returned 403, actor-spoof action 400, unsigned action 401, recipient approval/unauthorized open 403. Approved open succeeded, wrong code failed, one redeem succeeded and repeat failed. A sample cookie still received 401 at the real `/api/circle` route.
+- An HTTP Hanh session saved a cycle 3 approval; a separate browser Minh session read that approval. The production server was then stopped/restarted. Browser reload retained Minh's unexpired session and the 1/2 approval state. Tuan added the second approval but could not open. Minh subsequently opened and redeemed; reload retained Redeemed.
+- Operator opened the shared-reset dialog on mobile; its text named every-browser scope and permanence, focus began on Cancel, and Cancel left the working database intact. Actual reset behavior was verified against isolated test databases, not performed on the working demo during browser QA.
+- UI inspection at 1280x900 and 375x812 retained the incumbent Geist/shadcn/dark interface. Mobile scroll width was 360 at viewport 375; header controls wrapped. SQLite persistence and selectable-identity limitations were visible. The exercised production tab had no captured console errors. One batched click sequence did not open a modal; after observing the loaded state, a standalone open succeeded, then redemption/reload checks succeeded.
+- Impeccable's hardening guidance informed busy/error recovery and explicit shared-reset scope. Its detector returned `[]` on the four new/modified simulation surfaces. Review was inline, not independent; no redesign or new design-system rules were introduced. Existing eyebrow styles were left out of scope, not canonized.
+- Local screenshots (ignored) are `.cache/sqlite-review/desktop.jpg`, `mobile.jpg`, `reset-mobile.jpg`. No generated raster assets were shipped.
+- Runtime files `data/simulation.sqlite`, `-wal` and `-shm` exist and are ignored. Schema/state are fictional and separate from the existing Tide ledger/adapter. Repository visibility remained PRIVATE; no commit/push, public visibility change or submission was performed for this request.
+
+The app remains running on loopback port 3000. Live Tide vendor-key setup, enrollment, quorum and ORK E2EE remain separate unverified gates.

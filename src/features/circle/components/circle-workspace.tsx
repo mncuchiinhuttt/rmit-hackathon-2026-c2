@@ -19,7 +19,7 @@ export type PageError = { operation: Exclude<Operation, null>; message: string }
 export type OpenedState = { recordId: string; release: OpenedRelease; eligible: boolean };
 
 interface CircleWorkspaceProps {
-  preview?: { header: ReactNode; proofPanel: ReactNode };
+  preview?: { header: ReactNode; proofPanel: ReactNode; persistent?: boolean };
   snapshot: CircleSnapshot | null;
   artifact: ReleaseArtifact | null;
   governance: GovernanceSnapshot | null;
@@ -90,7 +90,7 @@ export function CircleWorkspace(props: CircleWorkspaceProps) {
         onLogout={props.onLogout}
         onRefresh={props.onRefreshSession}
       />}
-      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{pendingStatus(props.pending)}</p>
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{props.preview?.persistent && props.pending ? "Updating the SQLite demo." : pendingStatus(props.pending)}</p>
 
       <div className="flex-1 py-7 sm:py-9">
         <div className="mb-6 max-w-3xl">
@@ -145,6 +145,7 @@ export function CircleWorkspace(props: CircleWorkspaceProps) {
             <div className="min-w-0 space-y-4">
               <CycleSelector cycles={props.snapshot.cycles} selectedRecordId={props.selectedRecordId} disabled={props.pending !== null} onSelect={props.onSelectRecord} />
               <SealedPackage
+                persistent={props.preview?.persistent}
                 preview={Boolean(props.preview)}
                 cycle={cycle}
                 artifact={artifact}

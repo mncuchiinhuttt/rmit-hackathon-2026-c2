@@ -28,6 +28,8 @@ data/keycloakdb*
 data/hostless-hui.json
 data/hostless-hui.json.*
 data/.hostless-hui.*.tmp
+data/*.sqlite
+data/*.sqlite-*
 .next/
 next-env.d.ts
 .tide-pack/

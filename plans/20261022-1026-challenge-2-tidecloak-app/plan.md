@@ -18,6 +18,11 @@ The product concept remains: each circle cycle has a separate encrypted release 
 
 ## Latest Windows checkpoint
 
+- User requested SQLite while Tide is unavailable. Main simulated mode now has a SQLite-backed API and opaque sample sessions; cycle/approval/redemption state survives reload/server restart. Real Tide guards remain separate; `/demo` is still in-memory. See [SQLite mode](../../docs/sqlite-simulation.md). No live Tide gate or publication is completed by this change.
+- SQLite verification: 31 tests / 11 files / 142 expectations passed, plus typecheck, lint and production build. HTTP/browser checks confirmed independent sample sessions share approvals, restart preserves a session/approval, redeem survives reload, and sample cookies still get 401 at the real circle API.
+- User relayed Tide's temporary simulation instruction. Added explicit main-app sample sign-in, role display, sign-out and per-cycle access checks under `HUI_AUTH_MODE=simulated`, while preserving real Tide mode and API guards. Tide MCP 1.9.33 informed the [integration mapping](../../docs/tidecloak-integration-plan.md). This does not establish organiser acceptance or complete live gates.
+- Simulation tests bring the passing suite to 22 tests across nine files, 93 expectations; includes signed-out denial and fail-closed mode selection. Earlier 18-test results below describe the prior checkpoint.
+- Typecheck, lint and production build passed; production simulation and separate real-mode failure behavior were browser-checked. See [simulation verification](reports/simulated-tidecloak-2026-10-22.md). These checks do not complete live Tide acceptance.
 - App foundation and the explicit offline /demo flow are implemented and browser-tested. These local simulations do not close live Tide acceptance gates.
 - Typecheck, lint, production build and all 18 tests passed (eight files, 61 expectations). The four earlier Windows symlink failures are fixed using directory junctions; no test assertions or production security checks were relaxed.
 - The Windows TideCloak instance remains blocked during vendor-key finalization (FinalizeWallet HTTP 500 / VENDOR-KEYGEN_FAILED); this checkout has no exported adapter. Realm/licence and 1/5 enrollment observations elsewhere in this plan describe the original environment, not this Windows instance.

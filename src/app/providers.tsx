@@ -5,12 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import type { AuthMode } from "@/features/auth/mode";
 
 type BrowserConfig = Record<string, unknown>;
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children, mode }: { children: React.ReactNode; mode: AuthMode }) {
   const pathname = usePathname();
-  if (pathname === '/demo') return children;
+  if (mode === 'simulated' || pathname === '/demo') return children;
   return <SecureProviders>{children}</SecureProviders>;
 }
 

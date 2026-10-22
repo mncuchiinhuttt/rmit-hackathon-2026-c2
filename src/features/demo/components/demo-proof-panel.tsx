@@ -11,12 +11,15 @@ interface DemoProofPanelProps {
   actor: DemoRole;
   error: string | null;
   onApprove(): void;
+  requireSignIn?: boolean;
+  disabled?: boolean;
 }
 
-export function DemoProofPanel({ cycle, actor, error, onApprove }: DemoProofPanelProps) {
+export function DemoProofPanel({ cycle, actor, error, onApprove, requireSignIn = false, disabled = false }: DemoProofPanelProps) {
   const approved = cycle.approvals.length >= 2;
   const alreadyVoted = cycle.approvals.includes(actor);
-  const canApprove = isDemoSteward(actor) && cycle.sealed && !approved && !alreadyVoted;
+  const canApprove = !disabled && isDemoSteward(actor) && cycle.sealed && !approved && !alreadyVoted;
+  const switchAccount = requireSignIn ? "Sign out, then sign in as " : "Switch to ";
   return (
     <Card className="border-white/10 bg-card/90">
       <CardHeader>
@@ -27,7 +30,7 @@ export function DemoProofPanel({ cycle, actor, error, onApprove }: DemoProofPane
           </div>
           <Badge variant="outline" className="border-warning/40 text-warning">Simulated</Badge>
         </div>
-        <CardDescription>Try the same product flow without signing in. These sample approvals have no effect on Tide or the live app.</CardDescription>
+        <CardDescription>Two distinct sample stewards approve access for this cycle. These local decisions have no effect on Tide or the live app.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
         <dl className="grid grid-cols-[1fr_auto] gap-3 rounded-lg border border-border bg-background/60 p-3 text-sm">
@@ -57,7 +60,7 @@ export function DemoProofPanel({ cycle, actor, error, onApprove }: DemoProofPane
             <ShieldCheck aria-hidden="true" />{approved ? "Two demo approvals recorded" : alreadyVoted ? "Already approved as " + actor : "Approve as " + actor}
           </Button>
           <p className="text-xs leading-relaxed text-muted-foreground">
-            {!cycle.sealed ? "Switch to Bao and seal the package first." : approved ? actor === "minh" ? "Open the sample package using the release card." : "Switch to Minh and open the sample package." : !isDemoSteward(actor) ? "Switch to Hanh, Tuan or Mai above to add an approval." : alreadyVoted ? "Switch to another steward. One person cannot supply both approvals." : "Add your approval, then switch to a different steward."}
+            {!cycle.sealed ? switchAccount + "Bao and seal the package first." : approved ? actor === "minh" ? "Open the sample package using the release card." : switchAccount + "Minh and open the sample package." : !isDemoSteward(actor) ? switchAccount + "Hanh, Tuan or Mai to add an approval." : alreadyVoted ? switchAccount + "a different steward. One person cannot supply both approvals." : "Add your approval, then " + switchAccount.toLowerCase() + "a different steward."}
           </p>
         </section>
         {error && <Alert variant="destructive"><AlertTitle>Demo approval denied</AlertTitle><AlertDescription>{error}</AlertDescription></Alert>}

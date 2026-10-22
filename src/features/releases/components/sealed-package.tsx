@@ -13,6 +13,7 @@ type PendingOperation = "policies" | "seal" | "open" | "redeem" | "credentials" 
 
 interface SealedPackageProps {
   preview?: boolean;
+  persistent?: boolean;
   cycle: CycleSummary;
   memberCount: number;
   contributionVnd: number;
@@ -35,6 +36,7 @@ function formatVnd(amount: number) {
 
 export function SealedPackage({
   preview = false,
+  persistent = false,
   cycle,
   memberCount,
   contributionVnd,
@@ -162,7 +164,7 @@ export function SealedPackage({
           <div className="space-y-2">
             <Button ref={openButtonRef} type="button" className="w-full sm:w-auto" disabled={!canAttempt || pending !== null} aria-busy={pending === "open"} onClick={onAttemptOpen}>
               <PackageOpen aria-hidden="true" />
-              {pending === "open" ? "Asking Tide ORKs…" : preview ? "Try opening package" : "Attempt decrypt"}
+              {pending === "open" ? preview ? "Checking sample access…" : "Asking Tide ORKs…" : preview ? "Try opening package" : "Attempt decrypt"}
             </Button>
             {!canAttempt && (
               <p className="text-xs leading-relaxed text-muted-foreground">
@@ -178,7 +180,7 @@ export function SealedPackage({
         )}
 
         <p className="border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground">
-          {preview ? "Offline demo only. Role checks, approvals and package contents are sample UI behavior, not Tide security guarantees. Resetting or reloading clears your changes." : "Tide controls policy-based disclosure. This screen is not financial custody and cannot attest that a modified browser client preserves plaintext confidentiality."}
+          {persistent ? "SQLite-backed sample workflow, not Tide security guarantees. Saved approvals and redemption survive reloads. Only Operator can reset shared data; real funds never move." : preview ? "Offline demo only. Role checks, approvals and package contents are sample UI behavior, not Tide security guarantees. Resetting or reloading clears your changes." : "Tide controls policy-based disclosure. This screen is not financial custody and cannot attest that a modified browser client preserves plaintext confidentiality."}
         </p>
       </CardContent>
     </Card>

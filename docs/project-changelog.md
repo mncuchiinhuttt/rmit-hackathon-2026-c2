@@ -2,6 +2,23 @@
 
 ## 2026-10-22
 
+### SQLite-backed simulation
+
+- Added Bun-native SQLite persistence for fictional cycles, distinct approvals, single-use redemption, latest 50 events and hashed sample sessions. Schema versioning, foreign keys, WAL and immediate transactions are in place; no dependency or DB service was added.
+- The main app now uses separate localhost-only `/api/simulation` handlers with same-origin POST checks, input limits, opaque HttpOnly/SameSite sample cookies and server-resolved actors. Real Tide JWT/DPoP APIs remain unchanged and reject sample cookies.
+- Reload and an actual production restart preserved sample state/session; independent HTTP sessions shared approvals. Browser checks exercised steward denial, recipient open/redeem persistence, responsive views and reset-dialog cancel. Only Operator can confirm a shared reset; the actual working demo DB was not reset during browser verification.
+- Kept `/demo` in memory. Added [SQLite setup and limits](sqlite-simulation.md), ignored DB/sidecars and explicit persistence/error/reset copy. Tide mode does not silently fall back to SQLite.
+- Verification: 31 tests passed across 11 files with 142 expectations; typecheck, lint and production build passed. Readback after an actual server restart preserved the sample session and approval. DB/WAL/SHM ignore checks passed; repo remains private, with no push/publication requested in this change.
+
+### Explicit TideCloak simulation
+
+- Added explicit `HUI_AUTH_MODE=simulated` for the main app: fictional account sign-in/sign-out, selected-cycle role display and role/access enforcement. No Tide credentials, fake tokens or real encryption are used.
+- Consulted Tide MCP 1.9.33 for scenario/playbook planning and the RelationshipAttestation role/policy matrix; documented the mapping and live replacement in `tidecloak-integration-plan.md`.
+- Kept the real provider, browser callback and JWT/DPoP API guards intact. Missing mode retains real Tide, invalid mode fails, and simulated callbacks return to the app.
+- Added signed-out action denials, capability/cycle-role checks and mode-selection tests. All 22 tests across nine files passed with 93 expectations.
+- Typecheck, lint and production build passed. Production browser checks covered sealing, distinct account approvals, recipient access/redemption, Escape/focus and sign-out clearing; desktop/mobile had no horizontal overflow. The same build in real Tide mode retained its setup error instead of falling back. See the [simulation verification](../plans/20261022-1026-challenge-2-tidecloak-app/reports/simulated-tidecloak-2026-10-22.md).
+- Existing `/demo` remains an instant role-switch preview. Main-mode sign-out clears opened content but retains local approvals until reset/reload. No live Tide gate, video or public publication is claimed complete.
+
 ### Windows test compatibility
 
 - Changed the three isolated auth, replay and policy fixture setups to use directory junctions on Windows, preserving directory symlinks on macOS/Linux. Test assertions and production authorization code are unchanged.

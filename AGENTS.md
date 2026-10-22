@@ -40,6 +40,8 @@
 - Keep changes focused. No unrelated cleanup or dependency upgrades.
 - Remove superseded code and callers during a cutover; no dead aliases or compatibility shims.
 - Do not submit stubs, fake success responses, unfinished handlers or silent mock fallbacks.
+- Explicit exception authorized by the user: `HUI_AUTH_MODE=simulated` may simulate sign-in, roles and access checks in the main app. Keep it visibly labelled and isolated from real APIs; no fake tokens or claims of real Tide/ORK enforcement. Missing mode defaults to `tide`; invalid mode fails. See `docs/tidecloak-integration-plan.md`.
+- User-requested SQLite persistence for simulation lives at `data/simulation.sqlite` (optional `HUI_SIMULATION_DB_PATH`). Keep DB/WAL/SHM files ignored. Use separate localhost-only simulation APIs, opaque HttpOnly sample sessions and server-authoritative transactions; never accept actor overrides on actions or use these cookies on real Tide APIs. Only Operator may explicitly confirm shared fixture reset. `/demo` remains throwaway/in-memory.
 - Comments explain invariants or non-obvious decisions, not what the next line says.
 
 ## Required UI components: shadcn/ui

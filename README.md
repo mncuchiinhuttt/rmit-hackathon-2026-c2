@@ -1,5 +1,7 @@
 [![Built with TideCloak](https://tide.org/badges/built-with-tidecloak.svg)](https://tide.org/tidecloak?utm_source=github&utm_medium=readme&utm_campaign=unlocked)
 
+Current demo: SQLite-backed sample workflow with explicitly simulated TideCloak identities/roles, enabled through local configuration. Real Tide authentication/E2EE acceptance remains incomplete; see the [SQLite setup](docs/sqlite-simulation.md) and [integration plan](docs/tidecloak-integration-plan.md).
+
 ## Project overview
 
 Hostless Hui is a prototype for rotating savings circles that separates cycle-release approval from plaintext access.
@@ -26,7 +28,7 @@ The Next.js/Bun feature-first app, local adapter export, protected API boundary 
 
 ## Run locally
 
-Requirements: Bun 1.4+, a local TideCloak instance and a licensed realm. Follow the [verified setup](docs/setup-tidecloak.md) to configure private local files before using Tide-backed features.
+Requirements for the temporary simulation: Bun 1.4+. Copy `.env.example` to `.env` only for a new checkout; preserve an existing private `.env` and add `HUI_AUTH_MODE=simulated` instead. No Tide server or account is needed in this explicit mode. Real Tide mode additionally requires the [private setup](docs/setup-tidecloak.md).
 
 ```sh
 bun install --ignore-scripts
@@ -34,6 +36,14 @@ bun run dev
 ```
 
 The development server binds to `127.0.0.1` at `http://localhost:3000`. Do not run provisioning or the bootstrap-only preparation command as routine startup; the setup guide explains their gates and how to preserve an existing `.env`.
+
+### Simulated sign-in and access checks
+
+With `HUI_AUTH_MODE=simulated`, open http://localhost:3000/ and choose a fictional account. The main app uses a server-side sample session and saves cycles, approvals, redemption and events in `data/simulation.sqlite`. Bun supplies the SQLite driver; no additional DB server is needed. Data and sessions survive reloads/restarts. This is not real authentication, encryption or a Tide/ORK decision; real protected APIs still require verified Tide credentials.
+
+On a fresh database, Minh's cycle 3 open is denied. Sign out and sign in as Hanh to approve, then as Tuan to add the second approval. Steward and Operator reads remain denied. Sign back in as Minh to open/redeem. Bao can seal cycle 4. Sign-out clears opened contents, not saved changes. Use Refresh data or reload for updates made in another browser. Only Operator can confirm Reset shared demo; this replaces fictional data for everyone using this server, not real Tide data.
+
+Set `HUI_AUTH_MODE=tide` and restart to use the preserved real integration. An absent mode defaults to Tide, never simulation; an invalid mode fails. See the [Tide MCP integration plan and role matrix](docs/tidecloak-integration-plan.md). Live cryptographic acceptance remains unverified.
 
 ### Preview without Tide
 
@@ -71,7 +81,7 @@ bun run build
 bun run tide:verify
 ```
 
-The latest Windows run passed typecheck, lint, production build and all 18 tests across eight files with 61 expectations. Isolated subprocess fixtures use directory junctions on Windows and directory symlinks on other platforms. A restricted OS sandbox may still need permission to access temporary fixtures; the passing Windows suite was run outside that sandbox.
+The SQLite update passed all 31 tests across 11 files with 142 expectations, including persistence after reopening, separate DB connections, server-side role denials, single-use redemption, session rotation, same-origin enforcement, failed-write rollback and safe rejection of newer schemas. Typecheck, lint and production build passed. Isolated subprocess fixtures use directory junctions on Windows and directory symlinks on other platforms. A restricted OS sandbox may still need permission to access temporary fixtures; the passing Windows suite was run outside that sandbox. `tide:verify` is for real Tide setup, not a requirement or success claim for simulation.
 
 The earlier credential-free source export passed 15 tests across seven files with 39 expectations. Its initial two policy-fixture failures were repaired with isolated matching-vendor adapters without weakening production validation. See the [clean-checkout report](plans/20261022-1026-challenge-2-tidecloak-app/reports/clean-checkout-2026-10-22.md).
 
@@ -81,7 +91,7 @@ Production audit found no vulnerabilities across 92 packages; the full audit sti
 
 ## Structure
 
-- `src/features/{auth,circle,releases,governance,escrow}`: feature-owned types, client actions, services and product components.
+- `src/features/{auth,circle,releases,governance,escrow,demo}`: feature-owned types, client actions, services, product components and isolated simulation.
 - `src/app/api`: thin route adapters; `src/components/ui`: shadcn/Radix primitives.
 - `scripts/tide`: guarded bootstrap only; never used as application runtime authority.
 - [Architecture and limits](docs/system-architecture.md), [project rules](AGENTS.md), [implementation plan](plans/20261022-1026-challenge-2-tidecloak-app/plan.md).
@@ -91,7 +101,7 @@ Production audit found no vulnerabilities across 92 packages; the full audit sti
 
 Keep `.env`, `data/tidecloak.json`, the local JSON data store, raw licence/key responses and invitation files out of Git.
 Do not publish team emails, tokens, invite links or bootstrap credentials in screenshots or video.
-The current TideCloak container has no host data mount: stop/start retains its filesystem, removing it loses local H2 state.
+The Windows TideCloak container uses a named data volume; the earlier original environment had no host data mount. Preserve both existing realm and volume state; never recreate or wipe them to retry.
 
 The prototype does not implement real escrow, payment custody, custom Forseti deployment or instant per-record revocation.
 Policy authenticity is enforced by the ORKs when used; the application validates stored policy structure and expected scope.

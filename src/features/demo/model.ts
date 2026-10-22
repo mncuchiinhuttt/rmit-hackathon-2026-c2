@@ -19,12 +19,12 @@ export interface DemoState {
 }
 export type DemoAction = { type: "reset" } | { type: "clear" } | {
   type: "seal" | "approve" | "open" | "redeem";
-  actor: DemoRole;
+  actor: DemoRole | null;
   recordId: string;
   at: string;
 };
 
-export function isDemoSteward(actor: DemoRole) {
+export function isDemoSteward(actor: DemoRole | null) {
   return actor === "hanh" || actor === "tuan" || actor === "mai";
 }
 
@@ -47,7 +47,8 @@ export function createDemoState(): DemoState {
   };
 }
 
-export function demoOpenError(cycle: DemoCycle, actor: DemoRole): string | null {
+export function demoOpenError(cycle: DemoCycle, actor: DemoRole | null): string | null {
+  if (!actor) return "Sign in to a sample account before opening a package.";
   if (!cycle.sealed) return "No sample package is sealed. Switch to Bao to seal it first.";
   if (actor !== "minh") return "Only Minh, the demo recipient, can open this package. Stewards approve access but cannot read.";
   if (cycle.approvals.length < 2) return "Minh needs two different steward approvals for this cycle. Approvals for another cycle do not count.";
@@ -59,6 +60,7 @@ export function reduceDemo(state: DemoState, action: DemoAction): DemoState {
   if (action.type === "clear") return { ...state, error: null };
   const cycle = state.cycles.find(item => item.recordId === action.recordId);
   const operation = action.type === "approve" ? "policies" : action.type;
+  if (!action.actor) return { ...state, error: { operation, message: "Sign in to a sample account before taking this action." } };
   if (!cycle) return { ...state, error: { operation, message: "Unknown demo cycle." } };
   let message: string | null = null;
   if (action.type === "seal") {

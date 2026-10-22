@@ -1,13 +1,8 @@
-"use client";
-
-import dynamic from "next/dynamic";
-
-// The Tide callback reads window/PKCE state and cannot run during server rendering.
-const BrowserAuthCallback = dynamic(() => import('@/features/auth/components/auth-callback'), {
-  ssr: false,
-  loading: () => <p role="status" className="p-6 text-sm text-muted-foreground">Completing Tide sign-in...</p>,
-});
+import { redirect } from "next/navigation";
+import { BrowserAuthRedirect } from "@/features/auth/components/browser-auth-redirect";
+import { readAuthMode } from "@/features/auth/server/auth-mode";
 
 export default function AuthRedirectPage() {
-  return <BrowserAuthCallback />;
+  if (readAuthMode() === "simulated") redirect("/");
+  return <BrowserAuthRedirect />;
 }

@@ -14,7 +14,6 @@ export function DemoPage() {
   const [opened, setOpened] = useState<OpenedState | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const cycle = state.cycles.find(item => item.recordId === recordId) ?? state.cycles[0];
-  const session = demoSession(actor, cycle);
 
   function act(type: Exclude<DemoAction["type"], "reset" | "clear">) {
     dispatch({ type, actor, recordId, at: new Date().toISOString() });
@@ -50,6 +49,7 @@ export function DemoPage() {
     if (demoOpenError(cycle, actor) || cycle.redeemed) return;
     setOpened(current => current ? { ...current, release: { ...current.release, code: "" } } : null);
   }
+  const session = demoSession(actor, cycle);
   return (
     <CircleWorkspace
       preview={{

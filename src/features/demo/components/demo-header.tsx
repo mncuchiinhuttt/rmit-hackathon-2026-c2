@@ -22,7 +22,7 @@ export function DemoHeader({ actor, onActorChange, onReset }: DemoHeaderProps) {
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="ghost" size="sm" onClick={onReset}><RotateCcw aria-hidden="true" />Reset demo</Button>
-          <Button asChild variant="outline" size="sm"><Link href="/" prefetch={false}>Return to Tide app</Link></Button>
+          <Button asChild variant="outline" size="sm"><Link href="/" prefetch={false}>Return to app</Link></Button>
         </div>
       </header>
       <Alert className="border-warning/30 bg-warning/5">

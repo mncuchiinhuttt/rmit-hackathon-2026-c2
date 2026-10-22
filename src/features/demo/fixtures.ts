@@ -6,10 +6,20 @@ import { DEMO_TIME, demoOpenError, isDemoSteward, type DemoCycle, type DemoRole,
 
 export function demoSession(actor: DemoRole, cycle: DemoCycle): SessionView {
   return {
-    sub: "demo-" + actor, username: actor, tideUserKey: "", realmRoles: [],
+    sub: "demo-" + actor, username: actor, tideUserKey: "", realmRoles: demoRealmRoles(actor, cycle),
     isSteward: isDemoSteward(actor), canEncrypt: actor === "bao",
     canDecrypt: demoOpenError(cycle, actor) === null,
   };
+}
+
+export function demoRealmRoles(actor: DemoRole, cycle: DemoCycle): string[] {
+  const roles = ["_tide_enabled", "appUser"];
+  if (actor === "bao") roles.push("_tide_encryptor");
+  if (actor === "minh") {
+    roles.push("_tide_decryptor");
+    if (cycle.approvals.length >= 2) roles.push(cycle.releaseRole);
+  }
+  return roles;
 }
 
 export function demoSnapshot(state: DemoState, session: SessionView): CircleSnapshot {
