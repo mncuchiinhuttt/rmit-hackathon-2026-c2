@@ -8,7 +8,7 @@
 
 ## Overview
 
-- Priority: P1 · Status: Pending · 12:20–14:00 · Workstream **T** · **G1 14:00**
+- Priority: P1 · Status: In progress — realm/client/free-tier licence verified; IGA, enrollment and quorum pending · Workstream **T**
 - Tạo realm `hui-rmit26` đã licence + IGA, seed user/role, enrol 5 tài khoản, nâng 3 steward lên `tide-realm-admin`, **đo ngưỡng quorum thật**, export adapter (sớm, rồi export lại).
 
 ## Key Insights
@@ -62,7 +62,7 @@ flowchart LR
 
 ## Todo List
 
-- [ ] Realm import + licence (NEED_PAYMENT = no-go)
+- [x] Realm import + free-tier licence verified by live API; `myrealm` unchanged (see `docs/setup-tidecloak.md`)
 - [ ] IGA on, CR baseline drained
 - [ ] Seed đúng (không `_tide_decryptor` thường trực), đọc lại APPLIED
 - [ ] Adapter sớm đã export

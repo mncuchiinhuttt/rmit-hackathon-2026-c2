@@ -72,7 +72,7 @@ Chỉ giữ câu nào đã build và đo được; nếu ngưỡng đo được 
 
 ## Implementation Steps
 
-1. **Người dùng cung cấp (thiếu một thì dừng phần realm):** email thật quản lý licence; "có/không" với https://tide.org/legal (người đồng ý phải đủ tuổi thành niên theo điều khoản); **email @rmit.edu.vn của cả 4 người**; đồng ý **public repo** (thời điểm 15:45, sau rà bí mật) và người **gửi form** chính + dự phòng. Đã chốt: **4 người**, group name `RMIT_SGS_Gay_Hackers_C2` đúng.
+1. **Đã xác nhận:** 4 người; group name `RMIT_SGS_Gay_Hackers_C2`; email đội và email licence lưu riêng trong `.env`; T&C đã đồng ý và public repo khoảng 15:45 sau rà bí mật được cho phép. Realm `hui-rmit26` và licence free-tier đã tạo/kiểm chứng (xem `docs/setup-tidecloak.md`); enrollment/IGA chưa làm. Còn chốt người gửi form chính + dự phòng; không đưa email vào tài liệu public.
 2. Phân vai theo plan.md (tài khoản `hanh`, `tuan`, `mai`, `minh`, `bao`, mỗi người một browser profile).
 3. **Dọn máy (8 GB RAM, ổ 97%):** cần ≥ 6 GB trống; đóng Brave/Chrome thừa; xóa `~/.colima` (602 MB) nếu người dùng đồng ý; không cài thêm ngoài `bun install`. Quyết định độ phân giải quay thấp (1280×720) từ đầu.
 4. Hỏi Tide: Discord #support (https://discord.gg/XBMd9ny2q5) và nhân viên Tide tại sự kiện: "mạng ORK của `ork1.tideprotocol.com` có `RelationshipAttestation:1` không? ký policy trong multiAdmin cần mấy chữ ký? master-admin có thể ép cấp role bỏ qua IGA không?"
@@ -80,8 +80,9 @@ Chỉ giữ câu nào đã build và đo được; nếu ngưỡng đo được 
 
 ## Todo List
 
-- [ ] Email licence + T&C (có/không)
-- [ ] Email đội, đồng ý public, người gửi form (group name + 4 người: xong)
+- [x] Email licence + T&C: người dùng đã chọn email và trả lời đồng ý; lưu `.env`
+- [x] Email đội, group name, 4 người, đồng ý public sau rà bí mật
+- [ ] Người gửi form chính + dự phòng
 - [ ] Phân vai 4 người cho 5 tài khoản
 - [ ] Dọn máy ≥ 6 GB trống
 - [ ] Câu hỏi Tide đã gửi

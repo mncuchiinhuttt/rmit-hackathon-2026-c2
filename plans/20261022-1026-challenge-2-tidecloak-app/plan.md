@@ -1,7 +1,7 @@
 ---
 title: "Challenge 2 (Tide UNLOCKED): Hostless Hụi, vòng hụi không ai tự mở được payout"
 description: "Prototype TideCloak cho RMIT Hackathon Challenge 2: gói release của payout hụi được mã hóa E2EE, chỉ mở khi quorum steward duyệt; steward duyệt nhưng không đọc được."
-status: pending
+status: in-progress
 priority: P1
 effort: 5.75h wall-clock (12:00–17:45, workstreams song song)
 branch: main
@@ -30,7 +30,7 @@ Giới hạn nói thẳng (phải có trong README/docs): giả định client c
 | # | Phase | Cửa sổ (giờ VN) | Trạng thái | Gate |
 |---|---|---|---|---|
 | 0 | [Cổng người dùng, idea, nộp bài](phase-00-idea-story-and-gates.md) | 12:00–12:20 | Pending | email licence + T&C + thông tin nộp bài |
-| 1 | [Realm TideCloak, enrol, quorum](phase-01-tidecloak-realm-and-enrolment.md) | 12:20–14:00 | Pending | G1 14:00: 3 steward linked, ngưỡng đo được |
+| 1 | [Realm TideCloak, enrol, quorum](phase-01-tidecloak-realm-and-enrolment.md) | 12:20–14:00 | In progress: realm + licence verified; enrol/IGA pending | G1 14:00: 3 steward linked, ngưỡng đo được |
 | 2 | [Nền app trên Bun](phase-02-app-foundation-on-bun.md) | 12:20–13:40 | Pending | G2b 13:40: login thật + API dưới Bun |
 | 3 | [Lõi payout niêm phong](phase-03-sealed-payout-core-spike.md) | 13:45–15:15 | Pending | G1.5 13:50 (RA probe), G3 15:15 |
 | 4 | [UI sản phẩm](phase-04-product-ui-and-approvals.md) | 13:40–16:15 | Pending | đóng băng 16:15 |
@@ -38,6 +38,8 @@ Giới hạn nói thẳng (phải có trong README/docs): giả định client c
 | 6 | [Video và nộp bài](phase-06-video-and-submission.md) | 16:45–17:45 | Pending | form xác nhận 17:30 |
 
 Nghiên cứu nền: `research/researcher-01..04-*.md`. Red team: `reports/red-team-review.md`. Mirror Tide Raziel ở `.cache/raziel/` (gitignored); gọi `https://mcp.tide.org/mcp` bằng JSON-RPC khi cần bản mới.
+
+Verified setup: [setup-tidecloak](../../docs/setup-tidecloak.md). Project rules: [AGENTS.md](../../AGENTS.md), including required shadcn/ui components. Realm/licence provisioning does not mark enrollment, quorum or the webapp complete.
 
 ## Thang suy giảm (một hạn, một điều kiện đạt)
 

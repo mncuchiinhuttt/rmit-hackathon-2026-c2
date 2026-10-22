@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "bun --hot src/index.ts",
     "build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*'",
-    "start": "NODE_ENV=production bun src/index.ts"
+    "start": "NODE_ENV=production bun src/index.ts",
+    "tide:provision": "bun scripts/tide/provision-realm.ts",
+    "tide:verify": "bun scripts/tide/provision-realm.ts --verify"
   },
   "dependencies": {
     "react": "^19",

@@ -1,8 +1,8 @@
 # RMIT Hackathon 2026 - Challenge 2
 
-Working app built with [TideCloak](https://docs.tide.org/get-started/) on the [Bun](https://bun.sh) runtime (Bun server, React 19 frontend).
+RMIT Hackathon Challenge 2 project using the [Bun](https://bun.sh) runtime and React 19, with a separately provisioned [TideCloak](https://docs.tide.org/get-started/) development realm.
 
-Status: project bootstrapped with `bun init --react`; the application and its TideCloak integration are not built yet. Challenge brief, submission rules and checklist: [docs/challenge-2-brief.md](docs/challenge-2-brief.md).
+Status: the Bun + React starter runs; realm `hui-rmit26`, its app client and free-tier Tide licence are provisioned and verified. The application integration, user enrollment, IGA quorum and product UI are not implemented yet. See [setup evidence](docs/setup-tidecloak.md), [project rules](AGENTS.md) and the [challenge brief](docs/challenge-2-brief.md). shadcn/ui is required for future UI work but is not installed yet.
 
 ## Run
 
@@ -12,3 +12,14 @@ bun run dev      # http://localhost:3000, hot reload
 bun run build    # static bundle in dist/
 bun run start    # production server
 ```
+
+## TideCloak setup
+
+Use [docs/setup-tidecloak.md](docs/setup-tidecloak.md). Provisioning and verification run under Bun:
+
+```sh
+bun run tide:provision
+bun run tide:verify
+```
+
+Both commands require the ignored local `.env`; `.env.example` contains empty credential and consent fields. Do not commit local licence responses, credentials or adapter exports.
