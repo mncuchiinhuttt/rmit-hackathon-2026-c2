@@ -17,6 +17,7 @@
     "tide:provision": "bun scripts/tide/provision-realm.ts",
     "tide:verify": "bun scripts/tide/provision-realm.ts --verify",
     "tide:prepare": "bun scripts/tide/prepare-demo.ts",
+    "tide:enroll": "bun scripts/tide/enrollment-links.ts",
     "tide:sync": "bun scripts/tide/sync-enrollment.ts",
     "tide:activate": "bun scripts/tide/activate-first-admin.ts"
   },

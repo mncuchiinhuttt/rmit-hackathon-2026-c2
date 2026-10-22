@@ -19,7 +19,7 @@
 | Baseline IGA | Enabled in FirstAdmin. This does not prove multi-admin activation or quorum. |
 | Prepared users and roles | Five aliases `hanh`, `tuan`, `mai`, `minh`, `bao` and read/write/winner role setup are prepared. |
 | Invite generation | Generated privately and opened for the user; no invite URL or email is recorded here. |
-| Enrollment synchronization | Latest `bun run tide:sync` at 12:57 returned exit 0 and reported 0/5 linked. A successful command exit is not enrollment. |
+| Enrollment synchronization | Latest sync reports 1/5 (`hanh`); original callback failure did not remove the persisted link. |
 | Adapter | A private adapter exists; do not copy its content or credentials into the plan. |
 | Live admin/quorum proof | No first-admin activation, distinct steward keys, remaining admin grants, measured quorum or successful policy flow is verified. |
 
@@ -37,7 +37,7 @@
 - [x] Baseline IGA enabled in FirstAdmin.
 - [x] Five user aliases and read/write/winner role setup prepared.
 - [x] Private adapter available.
-- [x] `bun run tide:sync` executed; latest observed result at 12:57 was 0/5 linked.
+- [x] Latest synchronization confirms `hanh` linked (1/5); fresh app-bound invitations verified for the other four without relinking or realm changes.
 - [ ] Five human accounts linked and enrollment confirmed; blocked on invitees completing the private enrollment flow.
 - [ ] First-admin activation with a linked human administrator; blocked on enrollment.
 - [ ] Distinct steward keys and remaining admin grants; blocked on linked human stewards and governed approvals.

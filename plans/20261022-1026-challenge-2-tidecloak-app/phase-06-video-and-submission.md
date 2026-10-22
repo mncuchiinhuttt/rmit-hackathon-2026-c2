@@ -36,7 +36,7 @@
 
 ## Human-controlled actions
 
-Five human enrollments, any remaining consent, publication authorization and form submission require the user. The latest Tide sync remains 0/5 linked. No invite URL, email address, credentials or confirmation screenshot belongs in this plan. Do not claim the prototype was submitted or publicly accessible.
+The four remaining enrollments, publication authorization and form submission require the user. Latest sync is 1/5 (`hanh` linked). Keep invitation URLs, emails, credentials and confirmation screenshots private. No completed public submission is claimed.
 
 ## Acceptance boundary
 

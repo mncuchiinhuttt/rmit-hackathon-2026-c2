@@ -7,8 +7,14 @@
 - Created and verified realm `hui-rmit26` and client `hui-rmit26-client` on the existing local TideCloak server; the free-tier licence and vendor-key expiry were verified through live API responses.
 - Preserved `myrealm`; no paid checkout or container recreation occurred. Container DNS was corrected using the Wi-Fi-provided resolver; the one-time recovery removed only empty partial resources and is not a reset procedure.
 - Added Bun provisioning/verification scripts and the reviewed realm template. Bootstrap credentials, personal email/consent details, raw responses and recovery backups remain private.
-- Prepared five Keycloak demo accounts. The latest `bun run tide:sync` returned 0/5 Tide-linked identities. The separate vendor user-count API reported 0; it is not the Keycloak `/users` account count or linked-identity count.
+- Prepared five Keycloak demo accounts; the latest sync now reports 1/5 linked (`hanh`). The vendor user-count API separately reported 0 during bootstrap; it is not the live linked-account count.
 - `bun run tide:prepare` generated private local enrollment material and the ignored adapter. Invitation links are not included in tracked files.
+
+### Enrollment callback recovery
+
+- Medium-impact onboarding defect: invitations omitted app client/return URI, leading a newly linked member into the admin console; logs then showed licence 403 and a stale-session broker 500. `hanh` remained linked.
+- Added `bun run tide:enroll` and reused it from preparation: explicit app-bound return, checked action-token metadata, private links only for unlinked accounts, no relinking or role/realm reset.
+- Actual smoke verified four app-bound invitations and entry through **Link Account** to the Tide ORK. Human completion of a fresh invitation's final callback remains unverified. The vendor stale-session handler was not patched.
 
 ### Application and UI
 

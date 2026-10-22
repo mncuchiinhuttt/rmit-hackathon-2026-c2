@@ -1,4 +1,5 @@
 import { adminApi, clientName, drainFirstAdmin, jsonWrite, realmName, savePrivate, serverUrl } from './admin-client';
+import { refreshEnrollmentLinks } from './enrollment-links';
 
 interface User { id: string; username: string; attributes?: Record<string, string[]> }
 interface Role { id: string; name: string }
@@ -97,17 +98,6 @@ const adapter = await adminApi<Record<string, unknown>>(`/vendorResources/get-in
 if (!adapter.jwk || !adapter.vendorId || !adapter.homeOrkUrl) throw new Error('Exported adapter lacks required Tide fields');
 await savePrivate('data/tidecloak.json', JSON.stringify(adapter, null, 2));
 
-const invitations: Record<string, string> = {};
-for (const user of Object.values(prepared)) {
-  invitations[user.username] = await adminApi<string>(`/tideAdminResources/get-required-action-link?userId=${user.id}&lifespan=43200`, jsonWrite('POST', ['link-tide-account-action']));
-}
-await savePrivate('.cache/tide-enrollment.json', JSON.stringify(invitations, null, 2));
-const escape = (value: string) => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-const links = Object.entries(invitations).map(([username, url]) => {
-  const parsed = new URL(url);
-  if (!['localhost', '127.0.0.1'].includes(parsed.hostname)) throw new Error('Unexpected invitation origin');
-  return `<li><a href="${escape(url)}" target="_blank" rel="noreferrer">${escape(username)}</a></li>`;
-}).join('\n');
-await savePrivate('.cache/tide-enrollment.html', `<!doctype html><html lang="vi"><meta charset="utf-8"><title>Private Tide enrollment</title><body><h1>Liên kết tài khoản Tide</h1><p>Mỗi người mở tài khoản của mình trong một browser profile riêng, tự tạo mật khẩu. Không gửi mật khẩu cho agent. Ba steward: hanh, tuan, mai; người nhận: minh; escrow: bao.</p><ul>${links}</ul><p>Đây là file local riêng tư; không chia sẻ công khai.</p></body></html>`);
+await refreshEnrollmentLinks();
 console.log('Five accounts prepared. Private enrollment links: .cache/tide-enrollment.html');
 console.log('Public adapter exported. Enrollment and multi-admin quorum are still pending human action.');

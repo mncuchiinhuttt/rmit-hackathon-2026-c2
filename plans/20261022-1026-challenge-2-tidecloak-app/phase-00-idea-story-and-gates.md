@@ -24,7 +24,7 @@ Known limitations to retain in any final narrative: authentic-client assumption,
 
 | Intended role | Prepared alias | Intended authority | Current evidence |
 |---|---|---|---|
-| Stewards | `hanh`, `tuan`, `mai` | Admin approvals / policy signing | Five aliases and read/write/winner role setup prepared; no linked invitee, distinct steward key or admin activation verified. |
+| Stewards | `hanh`, `tuan`, `mai` | Admin approvals / policy signing | Aliases/roles prepared; `hanh` linked. Distinct steward keys and admin activation remain unverified. |
 | Winner | `minh` | Read after release | Alias/role prepared; human link and live read unverified. |
 | Escrow partner | `bao` | Seal-only / synthetic escrow | Alias/role prepared; human link and live encryption unverified. |
 | Host/operator | No Tide account intended | Store ciphertext and metadata only | Intended trust boundary; no live ciphertext inspection proof. |
@@ -35,7 +35,7 @@ The four-person team and group name `RMIT_SGS_Gay_Hackers_C2` are confirmed. Do 
 
 - [x] User-supplied licence email and Terms acceptance were used for provisioning; values remain private.
 - [x] Team size, group name and public-consent details are retained privately.
-- [ ] Five human invitees linked to the prepared Tide accounts. Invitations were generated privately and opened for the user; the latest sync was 0/5 linked.
+- [ ] All five human invitees linked; latest sync is 1/5 (`hanh`). Refreshed invitations target the app and skip the linked identity.
 - [ ] Primary and backup form submitters identified; not evidenced.
 - [x] Final five-prompt README overview checked for accuracy and the 249-word count; current copy states the unverified live gates explicitly.
 - [ ] Form submission and confirmation; not done.

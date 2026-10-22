@@ -39,7 +39,7 @@ The isolated crypto test observed valid fixture requests as 200; replay, missing
 - [x] Next/React/Bun implementation, Tailwind, shared UI primitives and feature-first routes present.
 - [x] Server auth/DPoP/JWT boundaries and protected routes implemented.
 - [x] Credential-free typecheck, lint, full test batch (15 tests / 39 expectations) and build passed; initial policy-fixture dependencies repaired without production changes.
-- [ ] Complete a real Tide sign-in with an enrolled human; blocked on 0/5 linked accounts.
+- [ ] Complete a real app sign-in with the enrolled human; `hanh` is linked, but a successful credentialed app session has not been exercised.
 - [ ] Observe an authenticated protected success (200) alongside intended 401/403 on the live app; not observed.
 - [ ] Treat G2 as unachieved until live account proof exists.
 

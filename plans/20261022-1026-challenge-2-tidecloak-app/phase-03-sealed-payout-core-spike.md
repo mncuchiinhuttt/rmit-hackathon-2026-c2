@@ -35,7 +35,7 @@ Parent-reported live response inspection is recorded in `reports/governance-veri
 
 ## Proof matrix
 
-End-user proof remains unobserved because there are 0/5 linked accounts and no credentialed Tide flow.
+End-user proof remains unobserved: `hanh` is linked (1/5), but no successful credentialed app session or live encryption flow has been exercised.
 
 | # | Intended actor/action | Required result | Observed status |
 |---|---|---|---|

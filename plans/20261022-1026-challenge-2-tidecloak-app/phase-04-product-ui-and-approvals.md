@@ -36,7 +36,7 @@ Lead with the circle, cycle, recipient and sealed release; show proof as support
 - [x] Production desktop/mobile surface inspected; no horizontal overflow in observed viewports.
 - [x] Keyboard focus ring visible on the sign-in control; mobile check included reduced motion.
 - [x] Unauthenticated desktop/mobile screenshots refreshed and visually inspected.
-- [ ] Authenticated/protected screenshots; blocked by 0/5 linked human accounts.
+- [ ] Authenticated/protected screenshots; awaiting an actual app sign-in with a linked human (`hanh` linked; total 1/5).
 - [ ] Live ORK refusal, proposal/approval, unseal and redemption states captured; not exercised.
 - [ ] Accessibility/contrast acceptance beyond the recorded browser observations independently verified; not evidenced.
 

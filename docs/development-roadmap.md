@@ -7,7 +7,8 @@
 | shadcn/Radix UI and responsive UI | Implemented; probe complete | 375px probe had no issues; at 1280px only the required keyboard focus ring was flagged |
 | Realm, client and free-tier Tide licence | Verified | `setup-tidecloak.md`; live licence/vendor-key checks passed |
 | Keycloak demo-account preparation | Verified | Five realm accounts prepared; vendor user-count API separately reported 0 |
-| Tide identity enrollment | Pending human action | Latest `bun run tide:sync` reported 0/5 linked; private enrollment links are not included in docs |
+| Tide identity enrollment | 1/5 linked; remaining human action | `hanh` linked; fresh app-bound invitations verified for the other four, with linked identities preserved |
+| Enrollment handoff recovery | Entry verified; final human callback pending | `tide:enroll` binds app client/return URI; fresh Link Account action reached the ORK; no admin-role workaround or vendor-handler patch |
 | First-admin activation and steward grants | Pending human action | `tide:activate` requires five linked accounts and three distinct steward keys; remaining grants/regeneration are not committed |
 | IGA quorum, signed policies and shared encryption/decryption | Implemented path; live acceptance pending | No observed quorum, successful signed-policy flow, shared release round trip or alternate-policy test |
 | Tide change-request history mapping | Implemented; payload smoke verified | Actual Tide shape mapped `entityId`/role rows to cycle `recordIds[]`; 269 approved records (244,463 bytes) parsed; denied `c4` request mapped to `payout-c4`, 0/1. Approval history is not current entitlement or end-user/quorum proof |

@@ -55,4 +55,4 @@ The scoped application re-review found all five original findings addressed and 
 
 ## Acceptance and security boundary
 
-Current Tide enrollment synchronization is 0/5. No authenticated protected success, human quorum, live policy signing, ORK encryption/decryption/refusal, or release redemption has been exercised. Build, source reviews, read-model parsing, and unauthenticated browser behavior do not substitute for those acceptance paths. Before authorized publication, review tracked files and Git history for personal email, consent, invite URLs, credentials, tokens, private adapter/config and raw responses; `.gitignore` does not clean history.
+Current enrollment is 1/5 (`hanh`). New invitations explicitly bind the app client/return URI and preserve linked accounts; fresh entry reached the ORK without credentials. The vendor stale-session handler was not patched and a fresh final human callback remains untested. No authenticated protected success, human quorum, live policy signing, ORK encryption/decryption/refusal or redemption is claimed. Continue the private-data review for later media/publication; `.gitignore` does not clean history.

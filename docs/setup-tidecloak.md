@@ -15,13 +15,13 @@ Observed on 2026-10-22 against the running local TideCloak 26.7.5 server:
 | Free-tier licence | Active, expires `2026-11-22T04:38:53Z` |
 | Vendor key expiry | `2026-11-29T04:38:49Z` |
 | Keycloak realm user accounts | 5 prepared (`hanh`, `tuan`, `mai`, `minh`, `bao`) |
-| Linked Tide identities | 0/5, per the latest `bun run tide:sync` |
-| Tide vendor user-count API | Reports 0; this vendor-side count is not the Keycloak realm `/users` count or the Tide-link count |
+| Linked Tide identities | 1/5 (`hanh`), per the latest `bun run tide:sync` |
+| Initial Tide vendor user-count API | Reported 0 during bootstrap; historical and separate from the live Tide-link count |
 | Existing `myrealm` | Unchanged in the before/after API comparison |
 
-The realm contains five prepared Keycloak accounts, but none had a linked Tide identity key in the
-latest sync. The separate vendor user-count API reports zero and must not be used to infer that the
-Keycloak realm has zero accounts. Realm creation and licensing do not prove human enrollment, IGA
+The realm contains five prepared Keycloak accounts; the latest sync confirms `hanh` linked and four
+still waiting. The vendor user-count API reported zero during bootstrap and is not a current
+linked-account count. Realm creation and licensing do not prove complete human enrollment, IGA
 quorum, live policy signing, encryption/decryption or end-to-end demo acceptance. No paid checkout
 was followed. The user supplied the licence email and explicitly accepted Tide's Terms before
 provisioning; the email itself is deliberately absent from tracked files.
@@ -76,15 +76,15 @@ accounts, exports the public adapter to ignored `data/tidecloak.json`, and write
 enrollment links to `.cache/tide-enrollment.html`. It refuses to run outside first-admin mode;
 do not rerun it after that mode ends.
 
-Each account owner must open their own local enrollment link in a separate browser profile and
-complete Tide enrollment without sharing their password. Then run:
+Each account owner opens their own link in a separate browser profile and completes the flow in that
+same profile. Invitations explicitly target `hui-rmit26-client` and return to the app, not the admin console. Then run:
 
 ```sh
 bun run tide:sync
 ```
 
 This refreshes the local private mapping from the Keycloak `tideUserKey` attributes. It does not
-perform enrollment. The latest observed result is 0/5 linked.
+perform enrollment. The latest result is 1/5 linked (`hanh`); preserve that identity and finish the other four.
 
 `bun run tide:activate` is a hard gate: all five prepared users must have Tide identity keys, and
 the three steward keys must be distinct. It will refuse activation before these conditions hold.
@@ -92,6 +92,23 @@ When eligible, the guarded bootstrap flow commits the first steward grant. Then 
 realm console at `http://localhost:8080/realms/hui-rmit26/tide-console/` and have stewards approve
 the remaining admin grants and related admin-policy regeneration. Measure the actual approval
 threshold there; no quorum or governed release flow is currently verified.
+
+### Callback error after linking
+
+The reported broker callback 500 occurred after `hanh` had already linked. Existing logs showed a
+successful identity stamp, an admin-console session followed by licence API 403, then
+`TideIdentityProvider.java:285` dereferencing a missing authentication session. Enrollment persisted.
+The old invitation request omitted `client_id` and `redirect_uri`; do not refresh or reuse its callback.
+
+Run `bun run tide:enroll` to refresh only unlinked invitations, without realm setup or role changes.
+Generated action tokens must contain the expected user, `azp=hui-rmit26-client` and
+`reduri=http://localhost:3000/` before they are saved privately. The linked account is shown as linked,
+not offered another invitation. Already-linked users start **Sign in with Tide** from the app.
+
+Live smoke verified all four new bindings; a fresh invitation returned 200 and its **Link Account**
+action contained the app client and reached the real Tide ORK onboarding page. No password was entered.
+This repairs our invitation handoff; it does not patch the vendor's stale-session handler or claim that
+a new human enrollment has completed its final callback. Never grant admin rights to hide the 403.
 
 ## Network issue encountered and resolved
 
@@ -138,11 +155,11 @@ reinitialize the container as a retry. The setup then succeeded.
 - `bun run tide:verify`: all reported checks passed; licence and vendor key were unexpired.
 - Re-running `bun run tide:provision` preserved the existing realm and active key without reissuing the licence.
 - Preflight rejected missing Terms acceptance, a reserved realm name and a non-loopback server before any realm/licence request.
-- Latest `bun run tide:sync` reported 0/5 linked accounts; `tide:activate` prerequisites are therefore unmet and governance activation remains pending.
+- Latest `bun run tide:sync` reported 1/5 linked (`hanh`); activation still waits for the other four and distinct steward keys.
 - A credential-free Git source export passed typecheck, lint, production build and 15 tests across seven files with 39 expectations. Policy tests use their own isolated matching-vendor adapters, never this machine's private configuration. The app builds without an adapter and reports a setup-required 503 at runtime until one is supplied. See the [clean-checkout report](../plans/20261022-1026-challenge-2-tidecloak-app/reports/clean-checkout-2026-10-22.md).
 - Production browser smoke at 1280x900 and 375x812 had no horizontal overflow. Public config returned 200, unauthenticated circle returned 401 with `no-store`, and the reviewed relay returned 200. Sign-in reached the ORK; no credentials were entered. One Keycloak iframe `ERR_ABORTED` and URL-wait timeout were observed, as documented in `../plans/20261022-1026-challenge-2-tidecloak-app/reports/production-smoke-2026-10-22.md`.
 - After removal of accidental root Playwright, `bun audit --production` exited 0 with no vulnerabilities across 92 packages. The full audit remains non-clean due to the unpatched dev-only `braces@3.0.3` advisory described in `system-architecture.md`.
-- No human enrollment, steward grants, quorum measurement, live policy signing or shared encryption/decryption was observed.
+- One persisted human link is observed. No successful credentialed app session, steward grants, measured quorum, live policy signing or shared encryption/decryption is claimed.
 
 ## Sources
 

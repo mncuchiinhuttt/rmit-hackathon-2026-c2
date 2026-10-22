@@ -22,7 +22,7 @@ Protected routes verify Tide JWTs and DPoP; release code includes the Tide SDK a
 
 ### 5. Prototype & storytelling
 
-The Next.js/Bun feature-first app, local adapter export, protected API boundary and real Tide sign-in navigation are implemented. Five Keycloak accounts are prepared, but the latest sync found 0/5 Tide-linked identities. Browser smoke reached the ORK sign-in form without credentials being entered. Human enrollment, distinct steward keys, IGA activation, live release acceptance, protected-state screenshots and a final video remain gates.
+The Next.js/Bun feature-first app, local adapter export, protected API boundary and real Tide sign-in navigation are implemented. Five Keycloak accounts are prepared, but the latest sync found 1/5 Tide-linked identities. Browser smoke reached the ORK sign-in form without credentials being entered. Full enrollment, distinct steward keys, IGA activation, live release acceptance, protected-state screenshots and a final video remain gates.
 
 ## Run locally
 
@@ -38,11 +38,13 @@ The development server binds to `127.0.0.1` at `http://localhost:3000`. Do not r
 ### Human enrollment and governance
 
 1. `bun run tide:prepare` is a one-time bootstrap command that only runs while the realm remains in `firstAdmin` mode. It creates five Keycloak accounts, exports the ignored adapter to `data/tidecloak.json`, and writes private enrollment links to `.cache/tide-enrollment.html`. Do not rerun it after first-admin mode ends.
-2. Each account owner opens their own link from that local file in a separate browser profile and completes Tide enrollment. Passwords are entered by their owners, never sent to the app or agent.
-3. Run `bun run tide:sync` after enrollment to refresh the private identity-key mapping. The latest observed result is 0/5 linked accounts.
+2. Each account owner opens their own link from that local file in a separate browser profile and completes Tide enrollment. The invitation is bound to the app client and returns to `http://localhost:3000/`, not the admin console. Passwords stay with their owners.
+3. Run `bun run tide:sync` afterward. The latest observed result is 1/5 linked (`hanh`); do not reopen that account's used invitation.
 4. `bun run tide:activate` is hard-gated: all five accounts must have Tide identity keys, and the three stewards must have distinct keys. It will refuse activation until then.
 5. After first-steward activation, sign in at `http://localhost:8080/realms/hui-rmit26/tide-console/`; stewards must approve the remaining admin grants and related admin-policy regeneration.
 6. Measure actual quorum behavior, then exercise signed release policies and authorized/unauthorized use of the same ciphertext and policy. These live acceptance steps have not yet been completed.
+
+To refresh invitations only, run `bun run tide:enroll`; do not rerun the realm bootstrap. This preserves linked identities and writes links only for unlinked accounts. If a stale broker callback displays 500 after linking, close it and start **Sign in with Tide** from the app. See the [callback recovery notes](docs/setup-tidecloak.md#callback-error-after-linking).
 
 The governance payload smoke parsed an actual 269-record approved-history response (244,463 bytes) and mapped a created, inspected, then denied `c4` change request to `payout-c4` with 0/1 approved. This verifies history mapping only: “Approved” is not current entitlement, and the smoke is not an enrolled-user or quorum test.
 
@@ -62,7 +64,7 @@ The final credential-free source export passed typecheck, lint, 15 tests across 
 
 Production browser smoke at 1280x900 and 375x812 had no horizontal overflow; public config returned 200 and unauthenticated circle returned 401. Sign-in reached the ORK without credentials. One Keycloak iframe abort and URL-wait timeout occurred; details are in the [production smoke report](plans/20261022-1026-challenge-2-tidecloak-app/reports/production-smoke-2026-10-22.md). A checkout without private configuration builds successfully and shows an explicit setup error rather than fake data.
 
-Production audit found no vulnerabilities across 92 packages; the full audit still reports the dev-only `braces` advisory detailed in the architecture note. Human enrollment, quorum, policy signing and shared decryption remain unverified.
+Production audit found no vulnerabilities across 92 packages; the full audit still reports the dev-only `braces` advisory detailed in the architecture note. The four remaining enrollments, quorum, policy signing and shared decryption remain unverified.
 
 ## Structure
 
