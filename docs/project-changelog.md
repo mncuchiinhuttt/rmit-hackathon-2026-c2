@@ -26,17 +26,19 @@
 
 ### Verification and security
 
-- The final post-cleanup batch passed typecheck, lint, production build and 15 tests across seven files with 43 expectations; all exited 0 without the earlier outer-pnpm-workspace warning. See `../plans/20261022-1026-challenge-2-tidecloak-app/reports/governance-verification-2026-10-22.md`.
+- The final credential-free source export passed typecheck, lint, production build and 15 tests across seven files with 39 expectations. Its initial two policy-test failures exposed a private-adapter dependency and a vendor-mismatch false-positive path; isolated matching-vendor fixtures now exercise accepted structure and specific rejection boundaries. See the [clean-checkout report](../plans/20261022-1026-challenge-2-tidecloak-app/reports/clean-checkout-2026-10-22.md).
 - Production browser smoke at 1280x900 and 375x812 had no horizontal overflow; public config returned 200, unauthenticated circle returned 401 with `no-store`, and the reviewed relay returned 200. Sign-in reached the ORK with no credentials entered. One Keycloak iframe `ERR_ABORTED` and URL-wait timeout were observed; see `../plans/20261022-1026-challenge-2-tidecloak-app/reports/production-smoke-2026-10-22.md`. No claim of zero browser errors.
 - A later unused-import fix passed targeted ESLint.
 - Review fixes include DPoP replay-JTI retention through `iat` plus allowed skew, fresh demo-user mapping after `tide:sync`, a logout epoch that blocks late plaintext reopening, and dialog focus restoration. The replay-TTL scenario failed before and passed after its fix.
 - A committed, persistent Bun patch for pinned `@tidecloak/js@0.14.33` covers ESM and CJS, disables optional JavaScript-readable `kcToken` persistence by clearing the legacy cookie, and preserves front-channel login, DPoP and E2EE. SDK cookie smoke passed on both bundles; keep the patch while this version is pinned.
 - After removing accidental root Playwright, `bun audit --production` exited 0 with no vulnerabilities across 92 packages. The full audit still reports the unpatched dev-only `braces@3.0.3` advisory described in `system-architecture.md`.
+- Built from Git-tracked source without `.env` or a Tide adapter; actual production runtime returned configuration 503 and an explicit setup screen, never fake private data.
+- Completed the bounded staged/history private-data review and pushed the implementation, fixture repair and `starter-bun` tag to the private repository. Public publication remains separate.
 
 ### Remaining acceptance and submission gates
 
 - Human enrollment of all five accounts, distinct steward identities, first-admin activation, remaining admin grants and admin-policy regeneration remain pending.
 - No actual quorum, successful enclave-signed policy, shared encryption/decryption, alternate-policy/master-recovery experiment or authenticated protected-state screenshot is verified.
 - Money movement and escrow are synthetic. No real payment custody or theft-proof guarantee is claimed.
-- Available login screenshots may be an earlier copy; no protected-state screenshots or final demo video are claimed as verified.
+- Login screenshots were refreshed from the actual production workspace; no protected-state screenshots or final demo video are claimed as verified.
 - The repository remains private. Public publication, external form submission and final submission confirmation have not occurred.

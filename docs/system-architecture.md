@@ -54,10 +54,10 @@ change may map to multiple cycles. It does not treat a payout ID as `entityId`. 
 The governance upstream-JSON parsing cap is 1 MiB for large Tide histories; public app request
 bodies remain capped at 64 KiB. A payload smoke parsed an actual 269-record approved-history
 response (244,463 bytes). A harmless `c4` proposal was inspected and denied without authorization;
-the resulting denied change request mapped to `payout-c4` with 0/1 approved. The final post-cleanup
-batch passed typecheck, lint, 15 tests across seven files with 43 expectations, and production
-build, all exit 0 without the earlier outer-workspace warning. Details:
-[governance verification](../plans/20261022-1026-challenge-2-tidecloak-app/reports/governance-verification-2026-10-22.md).
+the resulting denied change request mapped to `payout-c4` with 0/1 approved. The final credential-free
+source export passed typecheck, lint, 15 tests across seven files with 39 expectations, and production
+build. Policy tests use isolated matching-vendor adapters instead of the live local configuration.
+Details: [clean-checkout verification](../plans/20261022-1026-challenge-2-tidecloak-app/reports/clean-checkout-2026-10-22.md).
 Production browser smoke at 1280x900 and 375x812 reported no horizontal overflow; public config
 returned 200, unauthenticated circle returned 401 with `no-store`, and the reviewed relay returned
 200. Sign-in reached the ORK without credentials. One Keycloak iframe `ERR_ABORTED` and URL-wait

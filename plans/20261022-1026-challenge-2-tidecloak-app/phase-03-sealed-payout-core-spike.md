@@ -53,7 +53,7 @@ End-user proof remains unobserved because there are 0/5 linked accounts and no c
 ## Current checklist
 
 - [x] Feature source paths for release, policy validation, governance and synthetic escrow are present.
-- [x] Governance projection and stream-limit regressions passed in the final batch (15 tests, 43 expectations across 7 files).
+- [x] Governance, stream-limit and isolated policy regressions passed in the credential-free batch (15 tests, 39 expectations across 7 files); no live credentials used.
 - [x] Approved-history payload parsing and the `payout-c4` denied/unapplied bootstrap grant inspection recorded with limits.
 - [ ] G1.5 RelationshipAttestation probe and enclave signing; blocked on human enrollment/admin activation.
 - [ ] Live signed policy, successful encryption/decryption, ORK refusal matrix and authorized redemption; no live success path observed.

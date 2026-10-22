@@ -30,7 +30,8 @@
 - [x] Finalize the truthful README overview and verify its 249-word count; no video link is claimed because no final MP4 exists.
 - [ ] Record and verify a complete live flow; blocked by enrollment and unproven live quorum/E2EE.
 - [ ] Produce and review the final MP4; none present.
-- [ ] Perform secret/history review and authorized repository visibility change; not done.
+- [x] Bounded staged/history private-data review completed; implementation remains private.
+- [ ] Perform authorized repository visibility change; not done.
 - [ ] Submit the form and retain confirmation; not done and requires the human submitter.
 
 ## Human-controlled actions

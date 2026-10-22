@@ -20,7 +20,7 @@
 
 ## Release hygiene
 
-- [x] Typecheck, lint, meaningful tests and production build pass (15 tests / 43 expectations).
+- [x] Credential-free typecheck, lint, meaningful tests and production build pass (15 tests / 39 expectations).
 - [x] Unauthenticated production page checked at 1280px and 375px; keyboard/focus/reduced motion inspected.
 - [x] README project overview answers five official prompts in at most 300 words (249 words).
 - [ ] Demo video approximately 2 minutes, `.mp4`, under 100 MB, playback verified.

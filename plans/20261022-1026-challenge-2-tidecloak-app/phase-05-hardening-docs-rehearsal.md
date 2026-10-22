@@ -19,7 +19,7 @@
 |---|---|---|
 | `bun run typecheck` | Exit 0 in final post-cleanup batch. | Does not prove live Tide auth. |
 | `bun run lint` | Exit 0 in final post-cleanup batch. | Does not prove live Tide auth. |
-| `bun test` | Exit 0; 15 tests across 7 files, 43 expectations, 0 failures. | Synthetic fixtures do not establish human or live E2EE behavior. |
+| `bun test` | Credential-free exit 0; 15 tests across 7 files, 39 expectations, 0 failures. | Isolated matching-vendor policy fixtures do not establish human or live E2EE behavior. |
 | `bun run build` | Exit 0; no outer-workspace warning in the final batch. | Build does not prove protected runtime behavior. |
 | Production `bun run start` | Next server ready on loopback in 156 ms. | Only unauthenticated public surface exercised. |
 | Production dependency audit | 0 vulnerabilities across 92 packages. | The full development audit is separate. |
@@ -43,13 +43,13 @@ The scoped application re-review found all five original findings addressed and 
 
 ## Current checklist
 
-- [x] Final typecheck, lint, full test batch (15 tests / 43 expectations) and production build passed.
+- [x] Credential-free typecheck, lint, full test batch (15 tests / 39 expectations) and production build passed.
 - [x] Production start, unauthenticated route smoke, DPoP relay asset/hash/CSP and desktop/mobile login workspace inspected.
 - [x] Five original scoped code-review findings addressed; no remaining scoped findings.
 - [x] Governance projection review passed with no scoped findings.
 - [x] Documentation and README claim/word-count reconciliation; overview is 249 words.
-- [ ] Secret and Git-history review for publication; not recorded as complete.
-- [ ] Private commit/push and clean-checkout build; parent validation remains pending.
+- [x] Bounded staged/Git-history private-data review completed; see `reports/repository-hygiene-2026-10-22.md`.
+- [x] Implementation and fixture repair pushed privately; frozen-lock install/build and full checks without private configuration passed; see `reports/clean-checkout-2026-10-22.md`.
 - [ ] Repository publication; repo remains private and authorized visibility change is not performed.
 - [ ] Human enrollment, authenticated protected success and live Tide acceptance; still unverified.
 

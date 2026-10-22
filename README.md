@@ -58,7 +58,11 @@ bun run build
 bun run tide:verify
 ```
 
-The final post-cleanup batch passed typecheck, lint, 15 tests across seven files with 43 expectations, and production build; all exited 0 without the earlier workspace warning. See the [governance verification report](plans/20261022-1026-challenge-2-tidecloak-app/reports/governance-verification-2026-10-22.md). Production browser smoke at 1280x900 and 375x812 had no horizontal overflow; public config returned 200 and unauthenticated circle returned 401. Sign-in reached the ORK without credentials. One Keycloak iframe abort and URL-wait timeout occurred; details are in the [production smoke report](plans/20261022-1026-challenge-2-tidecloak-app/reports/production-smoke-2026-10-22.md). The production audit after removing accidental root Playwright found no vulnerabilities across 92 packages; the full audit still reports the dev-only `braces` advisory detailed in the architecture note. Human enrollment, quorum, policy signing and shared decryption remain unverified.
+The final credential-free source export passed typecheck, lint, 15 tests across seven files with 39 expectations, and production build. An initial clean run exposed two policy tests depending on the private adapter; isolated, matching-vendor fixtures now exercise both accepted structure and the intended rejection paths. See the [clean-checkout report](plans/20261022-1026-challenge-2-tidecloak-app/reports/clean-checkout-2026-10-22.md).
+
+Production browser smoke at 1280x900 and 375x812 had no horizontal overflow; public config returned 200 and unauthenticated circle returned 401. Sign-in reached the ORK without credentials. One Keycloak iframe abort and URL-wait timeout occurred; details are in the [production smoke report](plans/20261022-1026-challenge-2-tidecloak-app/reports/production-smoke-2026-10-22.md). A checkout without private configuration builds successfully and shows an explicit setup error rather than fake data.
+
+Production audit found no vulnerabilities across 92 packages; the full audit still reports the dev-only `braces` advisory detailed in the architecture note. Human enrollment, quorum, policy signing and shared decryption remain unverified.
 
 ## Structure
 

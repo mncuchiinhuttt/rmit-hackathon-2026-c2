@@ -24,7 +24,7 @@ Auth verification paths include `src/features/auth/server/{with-auth.ts,verify-t
 |---|---|---|
 | Final post-cleanup `bun run typecheck` | Exit 0. | Does not prove live Tide auth. |
 | Final post-cleanup `bun run lint` | Exit 0. | Does not prove live Tide auth. |
-| Final post-cleanup `bun test` | Exit 0; 15 tests across 7 files, 43 expectations, 0 failures. | Synthetic fixtures do not establish human or live E2EE behavior. |
+| Final credential-free `bun test` | Exit 0; 15 tests across 7 files, 39 expectations, 0 failures. | Isolated synthetic fixtures do not establish human or live E2EE behavior. |
 | Final post-cleanup `bun run build` | Exit 0; no outer-workspace warning. | Build does not prove protected runtime behavior. |
 | Production `bun run start` | Next ready on loopback in 156 ms. | Only unauthenticated public surface exercised. |
 | `GET /api/config` / unauthenticated `GET /api/circle` | 200 / 401 with `Cache-Control: no-store`. | Public config and expected denial only; no protected success. |
@@ -38,7 +38,7 @@ The isolated crypto test observed valid fixture requests as 200; replay, missing
 - [x] Old starter cut over; preserved at tag `starter-bun`.
 - [x] Next/React/Bun implementation, Tailwind, shared UI primitives and feature-first routes present.
 - [x] Server auth/DPoP/JWT boundaries and protected routes implemented.
-- [x] Latest post-review typecheck, lint, full test batch (15 tests / 43 expectations) and build passed as recorded.
+- [x] Credential-free typecheck, lint, full test batch (15 tests / 39 expectations) and build passed; initial policy-fixture dependencies repaired without production changes.
 - [ ] Complete a real Tide sign-in with an enrolled human; blocked on 0/5 linked accounts.
 - [ ] Observe an authenticated protected success (200) alongside intended 401/403 on the live app; not observed.
 - [ ] Treat G2 as unachieved until live account proof exists.
