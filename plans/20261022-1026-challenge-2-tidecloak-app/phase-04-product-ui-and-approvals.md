@@ -16,10 +16,11 @@
 - Tránh "generic access-control dashboard": màn dẫn bằng vòng hụi, chu kỳ, người thắng, escrow; bảng quyền chỉ là bằng chứng.
 - Phong cách **dark + glass** (áp P8 + P10). Bẫy: kính trên nền phẳng chỉ là card xám ⇒ luôn có radial glow; blur chỉ ≤ 4 vùng (header + card hero); `text-white/50` trên kính trượt tương phản ⇒ dùng token đã đo.
 - Mỗi cấp có **danh sách cắt** (red team): B0 không có drawer duyệt, không i18n, không animation phức tạp, không cổng chọn wireframe.
+- User requirement: use **shadcn/ui** for standard controls; compose product components from Button, Card, Dialog, Alert, Badge, Skeleton and Progress. Follow `AGENTS.md`: no emoji, no generic AI-template visuals, restrained gradients and visible keyboard focus. Install/configure only during UI implementation, not realm provisioning.
 
 ## Brief và việc chính (U1, U2 rút gọn)
 
-Audit: Bun 1.4 + Next 16 (scaffold Tide); chưa có Tailwind/shadcn/component; phong cách người dùng nêu = dark + glass ⇒ làm theo.
+Current audit: Bun 1.4 + React 19 starter; Tailwind/shadcn are not installed. Next 16 is a planned scaffold option, not current code. User requires dark/glass direction and shadcn/ui for future UI work.
 
 | Màn | Đến để làm gì | Quyết định bằng | Hành động cuối |
 |---|---|---|---|
@@ -70,7 +71,7 @@ Chữ Geist Variable + Geist Mono (ciphertext); icon `lucide-react`, **không em
 
 ## Implementation Steps
 
-1. Đọc `tailwind-v4-traps.md`; dựng token + nền (30').
+1. Đọc `AGENTS.md` và `tailwind-v4-traps.md`; cấu hình shadcn/ui theo framework đã qua gate, tái dùng primitive và `cn()`, dựng token + nền (30').
 2. Màn Circle A với dữ liệu seed (có ca biên: tên dài, số 9 chữ số, 0 phiếu) (60').
 3. Probe 1280 và 375 bằng `probe.mjs`; sửa tới khi sạch (B1).
 4. Nối thật từ ~15:00; chụp ảnh các trạng thái cho README.

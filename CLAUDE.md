@@ -3,6 +3,8 @@
 RMIT Hackathon 2026, Challenge 2: vibe code a working app with TideCloak. Brief, submission rules and checklist: `docs/challenge-2-brief.md`.
 Bun is the required runtime and package manager (project owner's decision): no npm, yarn, pnpm or node.
 
+Read `AGENTS.md` for the complete project rules: required shadcn/ui components, restrained dark/glass design, no generic AI-template styling, no emoji, Tide security boundaries and verification requirements.
+
 # Bun conventions
 
 Default to using Bun instead of Node.js.

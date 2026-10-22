@@ -60,7 +60,7 @@ Mô hình dữ liệu tối thiểu: `payouts[{recordId, ciphertext, sealedAt}]`
 3. Gọi Raziel trước khi viết code Tide (`tide_choose_playbook`, `tide_doctor`); đọc `tide_adapter AGENTS`.
 4. Khi adapter thật có (~12:45): `tide-doctor.sh` đến `RESULT: OK`; **G2b (≤ 13:40):** một login thật + gọi API bảo vệ bằng DPoP (401/403/200). Đỏ ở G2b ⇒ mở đường B với **trần 60 phút** (xong ≤ 14:40), song song không làm UI.
 5. Viết `json-store.ts` (ghi nguyên tử bằng file tạm + rename), seed circle/cycle giả, route payouts/policies/escrow (role `withRole`), chỉ phần cần cho B0.
-6. Cài công cụ UI cho F: `bun add tailwindcss @tailwindcss/postcss @fontsource-variable/geist @fontsource-variable/geist-mono lucide-react` (đã kiểm tồn tại: 4.3.3 / 5.3.0 / 1.61.0). Kiểm dung lượng ổ sau cài (≥ 5 GB trống).
+6. Cấu hình Tailwind v4 và **shadcn/ui bắt buộc** cho framework thực sự được chọn; đọc `AGENTS.md`, kiểm `components.json`/component sẵn có rồi dùng CLI chính thức qua Bun, chỉ thêm Button, Card, Dialog, Alert, Badge, Skeleton và Progress khi màn hình cần. Dùng chung `cn()` và token, không tự dựng primitive tương đương. Geist + Lucide giữ theo plan; không cài cả registry. Kiểm dung lượng ổ sau cài (≥ 5 GB trống).
 7. Commit nhỏ, thường xuyên.
 
 ## Todo List
