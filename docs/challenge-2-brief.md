@@ -15,7 +15,7 @@ Read on 2026-10-22 from the official challenge page https://tide.org/unlocked/ (
 | Deadline | 22/10/2026 18:00 (VN), same as Challenge 1 | Slide |
 | Sample | https://github.com/truongnguyenxuanvinh/hackathon | Slide |
 
-Group name for this team: `RMIT_SGS_Gay_Hackers_C2`. It is derived from the Challenge 1 notebook name `RMIT_SGS_Gay_Hackers_C1`; confirm it before submitting.
+Group name for this team: `RMIT_SGS_Gay_Hackers_C2` (confirmed by the team on 2026-10-22; derived from the Challenge 1 notebook name `RMIT_SGS_Gay_Hackers_C1`).
 
 ## Official brief and judging (https://tide.org/unlocked/)
 

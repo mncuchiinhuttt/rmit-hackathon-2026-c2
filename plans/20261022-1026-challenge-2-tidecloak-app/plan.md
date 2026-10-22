@@ -57,7 +57,7 @@ Luật cắt: **15:15** chưa qua G3 ⇒ khóa phần đã chứng minh được
 - Lưu trữ: tái dùng mẫu route vault của scaffold (JSON file qua `node:fs`); không SQLite, không token-bucket/idempotency generic (nếu dư giờ ở phase 05).
 - Phong cách UI: dark obsidian + glass + glow; **wireframe A cố định**, tiếng Anh, không cổng chọn.
 
-## Nhân sự (chọn trước 12:00)
+## Nhân sự (đã chốt 22/10: 4 người; group name `RMIT_SGS_Gay_Hackers_C2` đã được đội xác nhận)
 
 - **4 người:** T (Tide ops, enrol, quorum), B (backend + tích hợp, lái G2b/G3), F (UI), S (README, kịch bản, video, thông tin nộp). 5 tài khoản = 4 người + một người giữ 2 profile.
 - **2 người:** [T+B] và [F+S]; F chỉ bắt đầu khi B xong G2b.
