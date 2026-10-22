@@ -4,6 +4,7 @@ import type { AuditEvent } from "@/features/circle/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface EventHistoryProps {
+  preview?: boolean;
   events: AuditEvent[];
   recordId: string;
 }
@@ -21,14 +22,14 @@ function latestFirst(left: AuditEvent, right: AuditEvent) {
 }
 
 
-export function EventHistory({ events, recordId }: EventHistoryProps) {
+export function EventHistory({ events, recordId, preview = false }: EventHistoryProps) {
   const matchingEvents = events.filter((event) => event.recordId === recordId).sort(latestFirst).slice(0, 4);
 
   return (
     <Card className="bg-card/80">
       <CardHeader className="pb-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">Live record</p>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{preview ? "Demo activity" : "Live record"}</p>
           <CardTitle role="heading" aria-level={2} className="mt-1 flex items-center gap-2 text-base">
             <Activity className="size-4 text-muted-foreground" aria-hidden="true" />
             Recent events

@@ -1,12 +1,20 @@
 "use client";
 
 import { TideCloakProvider } from "@tidecloak/nextjs";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 type BrowserConfig = Record<string, unknown>;
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  if (pathname === '/demo') return children;
+  return <SecureProviders>{children}</SecureProviders>;
+}
+
+function SecureProviders({ children }: { children: React.ReactNode }) {
   const [config, setConfig] = useState<BrowserConfig | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -41,7 +49,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <p role={error ? 'alert' : 'status'} className="text-sm leading-relaxed text-muted-foreground">
           {error ?? 'Loading the verified Tide realm configuration. No private data is shown before authentication.'}
         </p>
-        {error && <Button className="w-fit" onClick={() => setAttempt(value => value + 1)}>Check setup again</Button>}
+        {error && (
+          <div className="flex flex-wrap gap-3">
+            <Button asChild><Link href="/demo">Preview app without Tide</Link></Button>
+            <Button variant="outline" onClick={() => setAttempt(value => value + 1)}>Check setup again</Button>
+          </div>
+        )}
       </main>
     );
   }

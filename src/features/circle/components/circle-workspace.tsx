@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import { WorkspaceSkeleton } from "@/features/circle/components/workspace-skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ export type PageError = { operation: Exclude<Operation, null>; message: string }
 export type OpenedState = { recordId: string; release: OpenedRelease; eligible: boolean };
 
 interface CircleWorkspaceProps {
+  preview?: { header: ReactNode; proofPanel: ReactNode };
   snapshot: CircleSnapshot | null;
   artifact: ReleaseArtifact | null;
   governance: GovernanceSnapshot | null;
@@ -61,8 +62,6 @@ function pendingStatus(operation: Operation) {
     default: return "";
   }
 }
-
-
 export function CircleWorkspace(props: CircleWorkspaceProps) {
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const cycle = props.snapshot?.cycles.find((entry) => entry.recordId === props.selectedRecordId) ?? null;
@@ -78,7 +77,7 @@ export function CircleWorkspace(props: CircleWorkspaceProps) {
   const redeemError = props.actionError?.operation === "redeem" ? props.actionError.message : null;
   return (
     <main className="mx-auto flex min-h-[100dvh] w-full max-w-[1320px] flex-col px-4 py-5 sm:px-7 sm:py-7 lg:px-10">
-      <SessionHeader
+      {props.preview?.header ?? <SessionHeader
         authenticated={props.authenticated}
         initializing={props.initializing}
         username={props.username}
@@ -90,7 +89,7 @@ export function CircleWorkspace(props: CircleWorkspaceProps) {
         onLogin={props.onLogin}
         onLogout={props.onLogout}
         onRefresh={props.onRefreshSession}
-      />
+      />}
       <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{pendingStatus(props.pending)}</p>
 
       <div className="flex-1 py-7 sm:py-9">
@@ -98,7 +97,7 @@ export function CircleWorkspace(props: CircleWorkspaceProps) {
           <p className="text-xs font-medium uppercase tracking-[0.16em] text-warning">Circle operations · RMIT 2026</p>
           <h1 id="circle-workspace-heading" tabIndex={-1} className="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">{props.snapshot?.name ?? "Circle workspace"}</h1>
           <p className="mt-2 max-w-2xl text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Inspect each cycle, its encrypted release package and the live Tide access decisions.
+            {props.preview ? "Explore the circle, switch roles and try a simulated cycle release. Everything here uses fictional data." : "Inspect each cycle, its encrypted release package and the live Tide access decisions."}
           </p>
           <p className="mt-2 text-pretty text-xs text-muted-foreground">Fictional members and VND. Funds and escrow are simulated.</p>
         </div>
@@ -146,6 +145,7 @@ export function CircleWorkspace(props: CircleWorkspaceProps) {
             <div className="min-w-0 space-y-4">
               <CycleSelector cycles={props.snapshot.cycles} selectedRecordId={props.selectedRecordId} disabled={props.pending !== null} onSelect={props.onSelectRecord} />
               <SealedPackage
+                preview={Boolean(props.preview)}
                 cycle={cycle}
                 artifact={artifact}
                 openButtonRef={openButtonRef}
@@ -161,9 +161,9 @@ export function CircleWorkspace(props: CircleWorkspaceProps) {
                 onSeal={props.onSeal}
                 onAttemptOpen={props.onAttemptOpen}
               />
-              <EventHistory events={props.snapshot.events} recordId={props.selectedRecordId} />
+              <EventHistory events={props.snapshot.events} recordId={props.selectedRecordId} preview={Boolean(props.preview)} />
             </div>
-            <ProofPanel
+            {props.preview?.proofPanel ?? <ProofPanel
               recordId={props.selectedRecordId}
               artifact={artifact}
               governance={props.governance}
@@ -173,11 +173,12 @@ export function CircleWorkspace(props: CircleWorkspaceProps) {
               policyPending={props.pending === "policies"}
               policyError={policyError}
               onCreatePolicies={props.onCreatePolicies}
-            />
+            />}
           </div>
         )}
       </div>
       <OpenedReleaseDialog
+        preview={Boolean(props.preview)}
         open={props.authenticated && !props.loggingOut && props.dialogOpen && dialogRelease !== null}
         release={dialogRelease}
         returnFocusRef={openButtonRef}

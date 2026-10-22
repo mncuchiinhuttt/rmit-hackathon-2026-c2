@@ -35,6 +35,17 @@ bun run dev
 
 The development server binds to `127.0.0.1` at `http://localhost:3000`. Do not run provisioning or the bootstrap-only preparation command as routine startup; the setup guide explains their gates and how to preserve an existing `.env`.
 
+### Preview without Tide
+
+Open http://localhost:3000/demo to try the existing product UI without a Tide server, adapter or account.
+The setup error screen also links to this page. The demo is explicitly labelled and keeps fictional
+data only in memory; its roles, approvals, opening and redemption are local simulations, not Tide
+authentication, encryption or network decisions. Protected APIs still require a verified Tide session.
+
+Cycle 3 starts sealed: try opening as Minh before approval, switch to Hanh and approve once, switch
+to Mai and approve again, then return to Minh to open and redeem the sample release. Cycle 4 starts
+unsealed so Bao can try sealing. Reset demo or reload to restore the samples.
+
 ### Human enrollment and governance
 
 1. `bun run tide:prepare` is a one-time bootstrap command that only runs while the realm remains in `firstAdmin` mode. It creates five Keycloak accounts, exports the ignored adapter to `data/tidecloak.json`, and writes private enrollment links to `.cache/tide-enrollment.html`. Do not rerun it after first-admin mode ends.

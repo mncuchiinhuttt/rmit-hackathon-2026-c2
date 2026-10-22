@@ -10,6 +10,7 @@ import { RedemptionAction } from "@/features/escrow/components/redemption-action
 import type { OpenedRelease } from "@/features/releases/types";
 
 interface OpenedReleaseDialogProps {
+  preview?: boolean;
   open: boolean;
   release: OpenedRelease | null;
   returnFocusRef: RefObject<HTMLButtonElement | null>;
@@ -26,6 +27,7 @@ function formatVnd(amount: number) {
 }
 
 export function OpenedReleaseDialog({
+  preview = false,
   open,
   release,
   returnFocusRef,
@@ -47,7 +49,7 @@ export function OpenedReleaseDialog({
         else document.getElementById("circle-workspace-heading")?.focus();
       }}>
         <DialogHeader>
-          <Badge variant="outline" className="mb-2 w-fit border-positive/40 text-positive"><Check aria-hidden="true" /> Tide open succeeded</Badge>
+          <Badge variant="outline" className="mb-2 w-fit border-positive/40 text-positive"><Check aria-hidden="true" /> {preview ? "Demo package opened" : "Tide open succeeded"}</Badge>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <LockKeyhole className="size-5 text-positive" aria-hidden="true" />
             Release opened
@@ -56,6 +58,7 @@ export function OpenedReleaseDialog({
             {eligible
               ? redeemed
                 ? "The synthetic redemption was accepted. The single-use code is no longer shown."
+                : preview ? "Two local demo approvals unlocked this sample package for Minh. This is a simulation; no Tide decryption took place."
                 : "This session received the release from the live open action. Keep the redemption code private; it is not written to persistent browser storage."
               : "Tide returned release data, but this session or record does not match the expected beneficiary. The code is withheld and redemption is unavailable."}
           </DialogDescription>

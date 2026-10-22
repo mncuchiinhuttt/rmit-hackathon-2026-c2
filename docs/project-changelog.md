@@ -2,6 +2,14 @@
 
 ## 2026-10-22
 
+### Offline product preview
+
+- Added explicit /demo mode with fictional in-memory data and role switching, reusing the product workspace, release card, events and redemption dialog.
+- Demo approvals and access decisions are labelled local simulations; the page skips Tide provider initialization and makes no protected API calls.
+- The live setup error screen links to the preview. Live authentication and protected API guards remain in place.
+- Added checks for distinct demo approvers, per-cycle scope, role separation, single-use redemption and reset behavior.
+- Verified the demo denial, two-person approval, recipient open/redeem, escrow sealing and reset in the browser; desktop/mobile views had no horizontal overflow. Typecheck, lint and production build passed. The three new demo tests passed; the full Windows run had 14 passes and four existing symlink-permission failures.
+
 ### Infrastructure and Tide realm
 
 - Created and verified realm `hui-rmit26` and client `hui-rmit26-client` on the existing local TideCloak server; the free-tier licence and vendor-key expiry were verified through live API responses.

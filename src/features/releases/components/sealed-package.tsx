@@ -12,6 +12,7 @@ import type { ReleaseArtifact } from "@/features/releases/types";
 type PendingOperation = "policies" | "seal" | "open" | "redeem" | "credentials" | "data" | null;
 
 interface SealedPackageProps {
+  preview?: boolean;
   cycle: CycleSummary;
   memberCount: number;
   contributionVnd: number;
@@ -33,6 +34,7 @@ function formatVnd(amount: number) {
 }
 
 export function SealedPackage({
+  preview = false,
   cycle,
   memberCount,
   contributionVnd,
@@ -68,7 +70,7 @@ export function SealedPackage({
               Release package
             </CardTitle>
             <CardDescription className="mt-2 max-w-xl">
-              The payout is sealed under Tide policy. Any authenticated circle member may attempt disclosure; the ORKs decide whether this session can open it.
+              {preview ? "Try the release flow with sample data. Two different demo stewards must approve before the recipient can open this package. No encryption or Tide request runs here." : "The payout is sealed under Tide policy. Any authenticated circle member may attempt disclosure; the ORKs decide whether this session can open it."}
             </CardDescription>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -114,7 +116,7 @@ export function SealedPackage({
             <PackageOpen aria-hidden="true" />
             <AlertTitle>No package sealed</AlertTitle>
             <AlertDescription>
-              This cycle has no stored ciphertext. An authenticated escrow session can seal the release after the write policy is available.
+              {preview ? "Switch to Bao (escrow) to seal this sample package, then collect two demo approvals." : "This cycle has no stored ciphertext. An authenticated escrow session can seal the release after the write policy is available."}
             </AlertDescription>
           </Alert>
         ) : !artifact || !hasCiphertext ? (
@@ -136,10 +138,10 @@ export function SealedPackage({
         {openError && (
           <Alert variant="destructive">
             <ShieldAlert aria-hidden="true" />
-            <AlertTitle>Tide release attempt did not succeed</AlertTitle>
+            <AlertTitle>{preview ? "Demo access denied" : "Tide release attempt did not succeed"}</AlertTitle>
             <AlertDescription className="space-y-2">
               <p>{openError}</p>
-              <p>If the expected release role was just granted, allow up to 120 seconds and refresh the Tide session. This result is from the real open attempt; the UI does not simulate an ORK refusal.</p>
+              <p>{preview ? "This is a local simulation. No Tide network decision was requested." : "If the expected release role was just granted, allow up to 120 seconds and refresh the Tide session. This result is from the real open attempt; the UI does not simulate an ORK refusal."}</p>
             </AlertDescription>
           </Alert>
         )}
@@ -152,7 +154,7 @@ export function SealedPackage({
             </Button>
             {!canSeal && (
               <p className="text-xs leading-relaxed text-muted-foreground">
-                {!authenticated ? "Sign in with Tide to continue." : !canEncrypt ? "The active session has no escrow encryption capability." : !hasWritePolicy ? "Waiting for the stored write policy." : "Waiting for cycle state to synchronize."}
+                {preview ? "Switch to Bao (escrow) to seal this sample package." : !authenticated ? "Sign in with Tide to continue." : !canEncrypt ? "The active session has no escrow encryption capability." : !hasWritePolicy ? "Waiting for the stored write policy." : "Waiting for cycle state to synchronize."}
               </p>
             )}
           </div>
@@ -160,7 +162,7 @@ export function SealedPackage({
           <div className="space-y-2">
             <Button ref={openButtonRef} type="button" className="w-full sm:w-auto" disabled={!canAttempt || pending !== null} aria-busy={pending === "open"} onClick={onAttemptOpen}>
               <PackageOpen aria-hidden="true" />
-              {pending === "open" ? "Asking Tide ORKs…" : "Attempt decrypt"}
+              {pending === "open" ? "Asking Tide ORKs…" : preview ? "Try opening package" : "Attempt decrypt"}
             </Button>
             {!canAttempt && (
               <p className="text-xs leading-relaxed text-muted-foreground">
@@ -169,14 +171,14 @@ export function SealedPackage({
             )}
             {canAttempt && !canDecrypt && (
               <p className="text-xs leading-relaxed text-warning">
-                This session does not currently report the release capability. The button still sends a real open attempt; the ORKs enforce the stored policy.
+                {preview ? "This demo role cannot open the selected package yet. Try it to inspect the simulated denial." : "This session does not currently report the release capability. The button still sends a real open attempt; the ORKs enforce the stored policy."}
               </p>
             )}
           </div>
         )}
 
         <p className="border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground">
-          Tide controls policy-based disclosure. This screen is not financial custody and cannot attest that a modified browser client preserves plaintext confidentiality.
+          {preview ? "Offline demo only. Role checks, approvals and package contents are sample UI behavior, not Tide security guarantees. Resetting or reloading clears your changes." : "Tide controls policy-based disclosure. This screen is not financial custody and cannot attest that a modified browser client preserves plaintext confidentiality."}
         </p>
       </CardContent>
     </Card>
