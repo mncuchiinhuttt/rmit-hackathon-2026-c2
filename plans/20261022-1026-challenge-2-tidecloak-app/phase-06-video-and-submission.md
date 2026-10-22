@@ -10,6 +10,7 @@
 ## Overview
 
 - Priority: P1 · Status: preparation assets and README are ready; final video, repository publication and form submission are not done.
+- Current user direction: defer video recording and keep the repository private. PRIVATE visibility has been checked; publication and form submission are not part of the current work.
 - Original event-time gates are historical; do not imply that a draft script or login screenshot is a completed demo.
 
 ## Submission requirements and observed state

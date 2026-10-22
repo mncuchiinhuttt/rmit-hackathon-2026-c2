@@ -13,7 +13,7 @@ async function checkPolicies(operation: string): Promise<unknown> {
   const cwd = await mkdtemp(join(tmpdir(), "hui-policy-test-"));
   try {
     await mkdir(join(cwd, "data"));
-    await symlink(join(projectRoot, "node_modules"), join(cwd, "node_modules"), "dir");
+    await symlink(join(projectRoot, "node_modules"), join(cwd, "node_modules"), process.platform === "win32" ? "junction" : "dir");
     await writeFile(join(cwd, "tsconfig.json"), JSON.stringify({
       compilerOptions: { baseUrl: ".", paths: { "@/*": [join(projectRoot, "src/*")] } },
     }));

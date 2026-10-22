@@ -16,17 +16,24 @@ The challenge asks for a working TideCloak-backed prototype, public repository, 
 
 The product concept remains: each circle cycle has a separate encrypted release package. Stewards may approve governed access, the winner may read after access is granted, and the host/operator should not be able to decrypt. Money, contributions and escrow are synthetic. No live policy signing, encryption or decryption flow has been exercised; these remain intended properties, not demonstrated results.
 
+## Latest Windows checkpoint
+
+- App foundation and the explicit offline /demo flow are implemented and browser-tested. These local simulations do not close live Tide acceptance gates.
+- Typecheck, lint, production build and all 18 tests passed (eight files, 61 expectations). The four earlier Windows symlink failures are fixed using directory junctions; no test assertions or production security checks were relaxed.
+- The Windows TideCloak instance remains blocked during vendor-key finalization (FinalizeWallet HTTP 500 / VENDOR-KEYGEN_FAILED); this checkout has no exported adapter. Realm/licence and 1/5 enrollment observations elsewhere in this plan describe the original environment, not this Windows instance.
+- PRIVATE repository visibility was checked. The user explicitly deferred video recording and public publication; form submission remains pending.
+
 ## Current status by phase
 
 | Phase | Observed state | Acceptance still open |
 |---|---|---|
 | [0 · Idea and human gates](phase-00-idea-story-and-gates.md) | Four-person team and group name confirmed; private consent/licence details remain private. README overview finalized at 249 words. | Human-to-account links, primary/backup form submitter and form submission. |
 | [1 · Tide realm](phase-01-tidecloak-realm-and-enrolment.md) | Realm/client/licence and baseline IGA verified; five aliases prepared; `hanh` linked (1/5). Invitation handoff now explicitly targets the app and preserves linked identities. | Four enrollments, first-admin activation, distinct steward keys, remaining grants and measured quorum are unproven. |
-| [2 · App foundation](phase-02-app-foundation-on-bun.md) | Feature-first app implemented. Latest typecheck, lint, 15-test suite and production build passed; production routes, relay asset and unauthenticated browser surface were inspected. | No credentialed Tide sign-in or authenticated protected success; sign-in navigation reached the ORK form without credentials. |
+| [2 · App foundation](phase-02-app-foundation-on-bun.md) | Feature-first app and offline preview implemented. Latest Windows typecheck, lint, 18-test suite and production build passed. | No credentialed Tide sign-in or authenticated protected success; original sign-in navigation reached the ORK form without credentials. |
 | [3 · Sealed payout core](phase-03-sealed-payout-core-spike.md) | Release, policy, governance and escrow paths exist. Governance-history mapping and a denied, unapplied FirstAdmin grant request were observed. | G3 unmet: no live signed policy, ORK encryption/decryption/refusal, human quorum or redeem flow. |
-| [4 · Product UI](phase-04-product-ui-and-approvals.md) | Production login workspace inspected at 1280px and 375px; no horizontal overflow; refreshed unauthenticated login screenshots. | Protected states and authenticated screenshots remain unverified. |
+| [4 · Product UI](phase-04-product-ui-and-approvals.md) | Offline demo role/approval/open/redeem flow and desktop/mobile views verified. Original production login workspace and screenshots were also inspected. | Live protected states and authenticated Tide screenshots remain unverified. |
 | [5 · Hardening and docs](phase-05-hardening-docs-rehearsal.md) | Credential-free batch passed; docs reconciled; scoped reviews passed; bounded secret/history review completed; implementation and fixture fix pushed privately. | Repository remains private. Full dev audit has one unpatched finding; live Tide acceptance remains human-gated. |
-| [6 · Video and submission](phase-06-video-and-submission.md) | Demo script/checklist exist; README overview is 249 words. | No final video, public repository or form confirmation. |
+| [6 · Video and submission](phase-06-video-and-submission.md) | Demo script/checklist exist; README overview is 249 words. Repository PRIVATE verified; video and publication deferred by the user. | No final video, public repository or form confirmation. |
 
 ## Stack and implementation
 

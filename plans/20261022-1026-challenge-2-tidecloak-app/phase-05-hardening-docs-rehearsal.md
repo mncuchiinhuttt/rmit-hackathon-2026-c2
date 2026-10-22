@@ -13,7 +13,13 @@
 - Priority: P1 · Status: final command batch, production smoke and scoped source reviews passed; human acceptance and publication gates remain open.
 - Historical event-time milestones are not active gates. No repository publication or form action was performed by this sync-back.
 
-## Final command and dependency results
+## Latest Windows verification
+
+All 18 tests passed across eight files with 61 expectations after changing three isolated fixture links to Windows junctions. macOS/Linux retain directory symlinks. Typecheck, lint and production build passed. Tests and build were rerun outside the restrictive OS sandbox after file-operation permission failures. No production authorization logic or assertions changed.
+
+Repository visibility is verified PRIVATE. Video and public publication are deferred by the user. The earlier results below remain historical evidence from the original environment; live Tide authentication, quorum and E2EE are still unverified on this Windows instance.
+
+## Original command and dependency results
 
 | Check | Observed result | Limit |
 |---|---|---|

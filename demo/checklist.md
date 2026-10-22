@@ -20,11 +20,17 @@
 
 ## Release hygiene
 
-- [x] Credential-free typecheck, lint, meaningful tests and production build pass (15 tests / 39 expectations).
+- [x] Latest Windows typecheck, lint, meaningful tests and production build pass (18 tests / 61 expectations across eight files).
 - [x] Unauthenticated production page checked at 1280px and 375px; keyboard/focus/reduced motion inspected.
 - [x] README project overview answers five official prompts in at most 300 words (249 words).
-- [ ] Demo video approximately 2 minutes, `.mp4`, under 100 MB, playback verified.
+- [ ] Demo video approximately 2 minutes, `.mp4`, under 100 MB, playback verified. Deferred by the user.
 - [x] Staged files and full reachable Git history received the bounded private-data pattern/path review; see the repository-hygiene report.
-- [ ] Repository made public only at the user-authorized time and after the secret review.
+- [ ] Repository made public only at the user-authorized time and after the secret review. Deferred by the user; current PRIVATE visibility verified.
 - [ ] Group name and team emails copied from private local configuration, not published in code/docs.
 - [ ] Google Form submitted with the public repository URL; confirmation saved privately.
+
+## Offline preview (not live Tide acceptance)
+
+- [x] Explicitly labelled /demo works without a Tide adapter or account.
+- [x] Browser checks cover demo denial, two distinct approvals, recipient open/redeem, escrow sealing and reset.
+- [x] Demo state remains local; protected live APIs still reject unauthenticated requests.

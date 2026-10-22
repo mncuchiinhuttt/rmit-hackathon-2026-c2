@@ -8,7 +8,7 @@ const projectRoot = resolve(import.meta.dir, "..");
 test("retains a signed future-iat DPoP jti through the proof's full validity window", async () => {
   const cwd = await mkdtemp(join(tmpdir(), "hui-dpop-replay-"));
   try {
-    await symlink(resolve(projectRoot, "node_modules"), join(cwd, "node_modules"), "dir");
+    await symlink(resolve(projectRoot, "node_modules"), join(cwd, "node_modules"), process.platform === "win32" ? "junction" : "dir");
     await writeFile(join(cwd, "tsconfig.json"), JSON.stringify({
       compilerOptions: { baseUrl: ".", paths: { "@/*": [resolve(projectRoot, "src/*")] } },
     }));

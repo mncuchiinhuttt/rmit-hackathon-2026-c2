@@ -71,7 +71,9 @@ bun run build
 bun run tide:verify
 ```
 
-The final credential-free source export passed typecheck, lint, 15 tests across seven files with 39 expectations, and production build. An initial clean run exposed two policy tests depending on the private adapter; isolated, matching-vendor fixtures now exercise both accepted structure and the intended rejection paths. See the [clean-checkout report](plans/20261022-1026-challenge-2-tidecloak-app/reports/clean-checkout-2026-10-22.md).
+The latest Windows run passed typecheck, lint, production build and all 18 tests across eight files with 61 expectations. Isolated subprocess fixtures use directory junctions on Windows and directory symlinks on other platforms. A restricted OS sandbox may still need permission to access temporary fixtures; the passing Windows suite was run outside that sandbox.
+
+The earlier credential-free source export passed 15 tests across seven files with 39 expectations. Its initial two policy-fixture failures were repaired with isolated matching-vendor adapters without weakening production validation. See the [clean-checkout report](plans/20261022-1026-challenge-2-tidecloak-app/reports/clean-checkout-2026-10-22.md).
 
 Production browser smoke at 1280x900 and 375x812 had no horizontal overflow; public config returned 200 and unauthenticated circle returned 401. Sign-in reached the ORK without credentials. One Keycloak iframe abort and URL-wait timeout occurred; details are in the [production smoke report](plans/20261022-1026-challenge-2-tidecloak-app/reports/production-smoke-2026-10-22.md). A checkout without private configuration builds successfully and shows an explicit setup error rather than fake data.
 

@@ -2,6 +2,12 @@
 
 ## 2026-10-22
 
+### Windows test compatibility
+
+- Changed the three isolated auth, replay and policy fixture setups to use directory junctions on Windows, preserving directory symlinks on macOS/Linux. Test assertions and production authorization code are unchanged.
+- All 18 tests across eight files now pass on Windows, with 61 expectations. Typecheck, lint and production build also passed; tests and build required execution outside the restrictive OS sandbox.
+- Confirmed repository visibility is PRIVATE. Video recording and publication are deferred at the user's request; no submission form was sent.
+
 ### Offline product preview
 
 - Added explicit /demo mode with fictional in-memory data and role switching, reusing the product workspace, release card, events and redemption dialog.
