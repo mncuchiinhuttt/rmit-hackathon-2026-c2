@@ -14,13 +14,13 @@ Every fictional account has simulated `_tide_enabled` and `appUser`. Extra roles
 
 | Account | Intended Tide roles | Simulated operations |
 |---|---|---|
-| Minh | Realm `_tide_decryptor`; `hui-cN-winner` after cycle N approvals | Open/redeem only a sealed, approved cycle; redeem once |
-| Hanh, Tuan, Mai | Client `realm-management:tide-realm-admin` | One approval each per cycle; cannot open or redeem |
-| Bao | Realm `_tide_encryptor`; matching record write policy | Seal an unsealed package; cannot approve or open |
-| Operator | No encryption, decryption or steward capability | Inspect fictional circle metadata; attempted open is denied |
+| Minh | Realm `_tide_decryptor`; `hui-cN-winner` after a committed reader grant | Receives cycles 1/3; no automatic access to Bao's turn |
+| Hanh, Tuan, Mai | Client `realm-management:tide-realm-admin` | Review others' proposals; no default reader access or beneficiary rights |
+| Bao | Realm `_tide_encryptor`; matching write policy; `_tide_decryptor` plus cycle role for its receiving turn | Seal packages; receive cycle 4 only after a committed reader grant |
+| Operator | No default reader, encryption or steward capability | May propose access; cannot self-approve. A group-approved reader grant permits opening, never another member's redemption |
 | Signed out | No simulated session | No workspace or release operations |
 
-Two distinct stewards is the **local demo rule**, not a measured Tide quorum. On first DB creation, cycle 1 starts approved; cycle 3 starts sealed without approvals; cycle 4 starts unsealed. All sample recipients are Minh. The main app now persists fictional state and sample sessions in SQLite across browsers/restarts. Sign-out clears opened contents, not saved approvals. Only Operator can confirm a shared fixture reset. See [SQLite mode](sqlite-simulation.md); these selectable sample identities are not real authentication.
+Two distinct stewards is the local demo rule, not a measured Tide quorum. A proposer cannot approve their own request. Fresh fixtures start cycle 1 approved for Minh, cycle 3 sealed for Minh without a grant, and cycle 4 unsealed for Bao. Existing sealed records retain their historic recipient during schema migration. Requests, votes, policy lifecycle and sessions persist in SQLite; sign-out clears opened contents. See [SQLite mode](sqlite-simulation.md) and [policy lifecycle](policy-lifecycle-and-evidence.md).
 
 ## Boundaries and live replacement
 
@@ -29,7 +29,7 @@ Two distinct stewards is the **local demo rule**, not a measured Tide quorum. On
 | Session and route entry | `SqliteDemoPage` requires a server-side sample session at `/` | `TideCloakProvider`, browser callback and `useTideSession`; complete credentialed enrollment/login |
 | Roles | Server-resolved fictional identity and selected-cycle role projection | Verified JWT claims; preserve realm/client distinction; refresh after propagation |
 | Access checks | SQLite service applies `reduceDemo` transactionally and rejects signed-out/wrong-role/duplicate/cross-cycle attempts | `withAuth` / realm/client guards verify real JWT and DPoP server-side; no simulated identity is accepted |
-| Approval | Two distinct local steward IDs | IGA/admin policy and current entitlement readback; measure actual quorum and propagation |
+| Approval | Explicit grant/renew/revoke proposal; two independent votes change pending to committed; stale proposals become superseded | IGA/admin policy and current entitlement readback; measure actual quorum and propagation |
 | Package storage/open | Clearly marked `DEMO_ONLY` text and sample release code | Enclave-signed RelationshipAttestation policies plus ORK encryption/decryption; verify same-policy denials and authorized reads |
 | Redemption | SQLite transaction records one use of a sample code, no funds move | Existing synthetic escrow service with server authorization and atomic redemption; never real payment custody |
 
@@ -39,7 +39,7 @@ Simulation initializes no Tide provider, issues no Tide JWT/DPoP proof and calls
 
 Set `HUI_AUTH_MODE=simulated` in local `.env`, then run the normal Bun app. `.env.example` includes that explicit choice for this temporary development phase. If the variable is absent, the app defaults to real `tide`; invalid values fail rather than silently enabling simulation.
 
-On fresh fixtures at `/`, sign in as Minh and attempt cycle 3 (denied). Sign out, sign in as Hanh and approve; sign out, sign in as Tuan and approve. Tuan still cannot open. Sign in as Operator to verify denial; then sign in as Minh to open/redeem. Sign in as Bao, choose cycle 4 and seal. Refresh/reload preserves shared changes; Operator can explicitly confirm reset to start over. `/demo` retains the separate in-memory preview.
+On fresh fixtures at `/`, Minh first requests cycle 3 access; Hanh and Tuan independently approve the request. Minh can then open/redeem. For the operator demonstration, Bao seals cycle 4; Operator tries to open (denied), proposes access (pending), and tries again after the first steward vote (still denied). The second independent vote commits that specific grant. Operator may then read, while only Bao may redeem. Minh's earlier cycle access does not open cycle 4. `/demo` remains a simpler, in-memory preview; the full governance story runs at `/`.
 
 To return to real integration, set `HUI_AUTH_MODE=tide` and restart the server after completing the [private Tide setup](setup-tidecloak.md). No code rewrite or mock-token bypass is needed. Missing adapter/network errors remain errors. `/auth/redirect` returns to `/` in simulation and mounts the existing browser-only Tide callback only in real mode.
 

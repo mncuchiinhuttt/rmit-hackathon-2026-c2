@@ -18,7 +18,7 @@ export function SimulationResetDialog({ disabled, onConfirm }: { disabled: boole
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Reset the shared SQLite demo?</DialogTitle>
-          <DialogDescription>This replaces sample cycles, approvals, redemption and event history for every browser using this server. It cannot be undone. Sample sessions and all real Tide data are unchanged.</DialogDescription>
+          <DialogDescription>This replaces sample cycles, reader grants, proposals, votes, redemption and event history for every browser using this server. It cannot be undone. Sample sessions and all real Tide data are unchanged.</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild><Button variant="outline" disabled={pending}>Cancel</Button></DialogClose>

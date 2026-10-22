@@ -1,0 +1,99 @@
+1
+00:00:00,700 --> 00:00:05,307
+We built Hostless Hui, a rotating savings circle where hosting
+
+2
+00:00:05,307 --> 00:00:09,914
+the application does not automatically give someone access to a
+
+3
+00:00:09,914 --> 00:00:14,521
+release code. Members contribute together. The receiving turn changes by
+
+4
+00:00:14,521 --> 00:00:19,128
+cycle. We separate three powers: operating the platform, approving access,
+
+5
+00:00:19,128 --> 00:00:20,971
+and redeeming a release.
+
+6
+00:00:25,700 --> 00:00:30,102
+In a conventional application, the operator who controls the server
+
+7
+00:00:30,102 --> 00:00:34,504
+can often change permissions or inspect stored secrets. A login
+
+8
+00:00:34,504 --> 00:00:38,906
+screen does not remove that power. For a savings circle,
+
+9
+00:00:38,906 --> 00:00:43,308
+the question is simple: can the group approve access without
+
+10
+00:00:43,308 --> 00:00:46,389
+trusting one host to control every decision?
+
+11
+00:00:50,400 --> 00:00:55,041
+This working prototype uses explicitly simulated identities and governance. Bao
+
+12
+00:00:55,041 --> 00:00:59,681
+is the recipient for cycle four. Operator tries opening and
+
+13
+00:00:59,681 --> 00:01:04,322
+is denied. Asking for access creates a pending request, not
+
+14
+00:01:04,322 --> 00:01:08,963
+a grant. Hanh approves once; access is still denied. Tuan's
+
+15
+00:01:08,963 --> 00:01:13,604
+independent approval commits the change. Operator can now read the
+
+16
+00:01:13,604 --> 00:01:18,244
+sample package, but cannot redeem Bao's turn. Only the scheduled
+
+17
+00:01:18,244 --> 00:01:22,885
+recipient can redeem once. TideCloak is the intended cryptographic boundary:
+
+18
+00:01:22,885 --> 00:01:27,526
+signed record policies and ORK-mediated decryption should enforce these rights
+
+19
+00:01:27,526 --> 00:01:32,167
+beyond the application server. Our integration is implemented, but live
+
+20
+00:01:32,167 --> 00:01:35,879
+encryption, decryption and quorum remain to be verified.
+
+21
+00:01:40,200 --> 00:01:44,819
+The possibility is a group that can share oversight without
+
+22
+00:01:44,819 --> 00:01:49,438
+handing one operator permanent authority. Access rotates, approvals are visible,
+
+23
+00:01:49,438 --> 00:01:54,057
+and renewal or revocation requires review. This prototype models disclosure,
+
+24
+00:01:54,057 --> 00:01:58,676
+not financial custody. Tide's live cryptographic proof is the next
+
+25
+00:01:58,676 --> 00:01:59,600
+acceptance gate.

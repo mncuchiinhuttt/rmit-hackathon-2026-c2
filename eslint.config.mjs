@@ -5,5 +5,5 @@ import nextTypescript from 'eslint-config-next/typescript';
 export default defineConfig([
   ...nextVitals,
   ...nextTypescript,
-  globalIgnores(['.next/**', '.cache/**', 'node_modules/**', 'dist/**', 'public/tide_dpop_auth.html', 'next-env.d.ts']),
+  globalIgnores(['.next/**', '.cache/**', 'node_modules/**', 'dist/**', 'demo/hyperframes/**', 'public/tide_dpop_auth.html', 'next-env.d.ts']),
 ]);

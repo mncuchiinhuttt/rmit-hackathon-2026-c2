@@ -1,0 +1,11 @@
+{
+  "name": "hyperframes",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bunx hyperframes@0.8.185 preview",
+    "check": "bunx hyperframes@0.8.185 check",
+    "render": "bunx hyperframes@0.8.185 render --fps 24 --workers 2 --crf 22 --output ../video.mp4",
+    "build-film": "bun build-film.ts"
+  }
+}

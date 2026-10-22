@@ -40,13 +40,13 @@ export function DemoPage() {
     if (demoOpenError(cycle, actor)) return;
     setOpened({
       recordId, eligible: true,
-      release: { cycle: cycle.number, beneficiary: "minh", amountVnd: cycle.amountVnd, code: cycle.redeemed ? "" : "DEMO-C" + cycle.number + "-SAMPLE-CODE" },
+      release: { cycle: cycle.number, beneficiary: cycle.beneficiaryUsername, amountVnd: cycle.amountVnd, code: cycle.redeemed ? "" : "DEMO-C" + cycle.number + "-SAMPLE-CODE" },
     });
     setDialogOpen(true);
   }
   function redeem() {
     act("redeem");
-    if (demoOpenError(cycle, actor) || cycle.redeemed) return;
+    if (demoOpenError(cycle, actor) || actor !== cycle.beneficiaryUsername || cycle.redeemed) return;
     setOpened(current => current ? { ...current, release: { ...current.release, code: "" } } : null);
   }
   const session = demoSession(actor, cycle);

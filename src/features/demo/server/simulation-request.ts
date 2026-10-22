@@ -22,17 +22,23 @@ export function assertSimulationRequest(request: Request): void {
 
 export function parseSimulationCommand(value: unknown): SimulationCommand {
   const body = requireJsonObject(value);
-  const allowed = body.type === "sign-in" ? ["type", "actor"] : body.type === "redeem" ? ["type", "recordId", "code"] : ["type", "recordId"];
+  const allowed = body.type === "sign-in" ? ["type", "actor"] : body.type === "propose" ? ["type", "recordId", "kind", "target"] : body.type === "vote" ? ["type", "requestId"] : body.type === "redeem" ? ["type", "recordId", "code"] : ["type", "recordId"];
   if (Object.keys(body).some(key => !allowed.includes(key))) throw new ApiError(400, "invalid_request", "Unexpected sample command field.");
   if (body.type === "sign-in" && isDemoRole(body.actor)) return { type: body.type, actor: body.actor };
   if (body.type === "sign-out" || body.type === "reset") return { type: body.type };
-  if (["seal", "approve", "open", "redeem"].includes(String(body.type)) &&
+  if (body.type === "vote" && typeof body.requestId === "string" && /^[a-f0-9-]{36}$/.test(body.requestId)) return { type: "vote", requestId: body.requestId };
+  if (body.type === "propose" && typeof body.recordId === "string" && /^payout-c(1|3|4)$/.test(body.recordId) && (body.kind === "grant" || body.kind === "renew" || body.kind === "revoke")) {
+    if (body.kind === "grant" && !isDemoRole(body.target)) throw new ApiError(400, "invalid_request", "Choose a sample reader.");
+    if (body.kind !== "grant" && body.target !== null) throw new ApiError(400, "invalid_request", "Renewal and revocation preserve cycle scope.");
+    return { type: "propose", recordId: body.recordId, kind: body.kind, target: isDemoRole(body.target) ? body.target : null };
+  }
+  if (["seal", "open", "redeem"].includes(String(body.type)) &&
       typeof body.recordId === "string" && /^payout-c(1|3|4)$/.test(body.recordId)) {
     if (body.type === "redeem") {
       if (typeof body.code !== "string" || body.code.length > 128) throw new ApiError(400, "invalid_request", "Send the sample redemption code.");
       return { type: "redeem", recordId: body.recordId, code: body.code };
     }
-    if (body.type === "seal" || body.type === "approve" || body.type === "open") return { type: body.type, recordId: body.recordId };
+    if (body.type === "seal" || body.type === "open") return { type: body.type, recordId: body.recordId };
   }
   throw new ApiError(400, "invalid_request", "Unknown sample account or command.");
 }

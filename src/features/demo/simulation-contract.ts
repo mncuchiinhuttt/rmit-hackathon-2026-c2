@@ -1,11 +1,14 @@
 import type { OpenedRelease } from "@/features/releases/types";
 import { DEMO_ACTORS, type DemoRole, type DemoState } from "./model";
+import type { ChangeKind } from "./governance-types";
 
-export type SimulationMutation = "seal" | "approve" | "open" | "redeem";
+export type SimulationMutation = "seal" | "open" | "redeem";
 export type SimulationCommand =
   | { type: "sign-in"; actor: DemoRole }
   | { type: "sign-out" }
   | { type: "reset" }
+  | { type: "propose"; recordId: string; kind: ChangeKind; target: DemoRole | null }
+  | { type: "vote"; requestId: string }
   | { type: SimulationMutation; recordId: string; code?: string };
 
 export interface SimulationView {

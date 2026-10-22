@@ -8,16 +8,20 @@ tags: [feature, frontend, backend, auth, security, experimental]
 created: 2026-10-22
 ---
 
-# Hostless Hụi: a savings circle where no host, platform or single steward can open the payout
+# Hostless Hụi: rotating access that no operator grants alone
 
 ## Purpose and evidence rule
 
-The challenge asks for a working TideCloak-backed prototype, public repository, video, README answers and form submission. Original event-time gates have elapsed and are historical, not active acceptance criteria. This sync-back records evidence only; no phase or submission is marked complete solely because code exists.
+The challenge asks for a working TideCloak-backed prototype, public repository, video, README answers and form submission. The user's latest request prioritizes the two-minute HyperFrames video and a private repository push before the stated 18:00 local deadline. Public visibility and form submission remain separate human-authorized gates. No phase or submission is marked complete solely because code exists.
 
-The product concept remains: each circle cycle has a separate encrypted release package. Stewards may approve governed access, the winner may read after access is granted, and the host/operator should not be able to decrypt. Money, contributions and escrow are synthetic. No live policy signing, encryption or decryption flow has been exercised; these remain intended properties, not demonstrated results.
+Each circle cycle has its own release package. Stewardship and hosting grant no default reader access. The group may explicitly authorize a reader, including an Operator, while only the scheduled recipient can redeem. Money, contributions and escrow are synthetic. Live policy signing, encryption/decryption and measured quorum remain unverified.
 
 ## Latest Windows checkpoint
 
+- Latest governance verification: 41 tests across 14 files, 202 expectations; typecheck, lint and production build passed. A two-minute HyperFrames walkthrough now combines actual simulated-app captures, the four supplied ElevenLabs tracks and English captions. Its review and export evidence are in [video review](../../demo/hyperframes/REVIEW.md). This is not live Tide cryptographic proof.
+
+- Product feedback steps 1–4 implemented: five-step flow, role/next-action guidance, recipient rotation to Bao for cycle 4, explicit pending/committed grant/renew/revoke proposals, independent votes and versioned lifecycle. Evidence details are folded below the work. SQLite v2 migration preserves history and sessions; a private pre-migration copy is retained locally.
+- Browser demonstration observed Operator denial before proposal and after one approval; two distinct stewards committed the grant, then Operator opened. The approving steward still could not read, and Operator could not redeem Bao's turn. Step 5 remains blocked by missing local Tide adapter and uncompleted live identity/ORK evidence; see [policy lifecycle and evidence](../../docs/policy-lifecycle-and-evidence.md).
 - User requested SQLite while Tide is unavailable. Main simulated mode now has a SQLite-backed API and opaque sample sessions; cycle/approval/redemption state survives reload/server restart. Real Tide guards remain separate; `/demo` is still in-memory. See [SQLite mode](../../docs/sqlite-simulation.md). No live Tide gate or publication is completed by this change.
 - SQLite verification: 31 tests / 11 files / 142 expectations passed, plus typecheck, lint and production build. HTTP/browser checks confirmed independent sample sessions share approvals, restart preserves a session/approval, redeem survives reload, and sample cookies still get 401 at the real circle API.
 - User relayed Tide's temporary simulation instruction. Added explicit main-app sample sign-in, role display, sign-out and per-cycle access checks under `HUI_AUTH_MODE=simulated`, while preserving real Tide mode and API guards. Tide MCP 1.9.33 informed the [integration mapping](../../docs/tidecloak-integration-plan.md). This does not establish organiser acceptance or complete live gates.
@@ -26,7 +30,7 @@ The product concept remains: each circle cycle has a separate encrypted release 
 - App foundation and the explicit offline /demo flow are implemented and browser-tested. These local simulations do not close live Tide acceptance gates.
 - Typecheck, lint, production build and all 18 tests passed (eight files, 61 expectations). The four earlier Windows symlink failures are fixed using directory junctions; no test assertions or production security checks were relaxed.
 - The Windows TideCloak instance remains blocked during vendor-key finalization (FinalizeWallet HTTP 500 / VENDOR-KEYGEN_FAILED); this checkout has no exported adapter. Realm/licence and 1/5 enrollment observations elsewhere in this plan describe the original environment, not this Windows instance.
-- PRIVATE repository visibility was checked. The user explicitly deferred video recording and public publication; form submission remains pending.
+- PRIVATE repository visibility was checked. The user has now authorized video creation and a private push; public visibility and form submission remain pending.
 
 ## Current status by phase
 
@@ -38,7 +42,7 @@ The product concept remains: each circle cycle has a separate encrypted release 
 | [3 · Sealed payout core](phase-03-sealed-payout-core-spike.md) | Release, policy, governance and escrow paths exist. Governance-history mapping and a denied, unapplied FirstAdmin grant request were observed. | G3 unmet: no live signed policy, ORK encryption/decryption/refusal, human quorum or redeem flow. |
 | [4 · Product UI](phase-04-product-ui-and-approvals.md) | Offline demo role/approval/open/redeem flow and desktop/mobile views verified. Original production login workspace and screenshots were also inspected. | Live protected states and authenticated Tide screenshots remain unverified. |
 | [5 · Hardening and docs](phase-05-hardening-docs-rehearsal.md) | Credential-free batch passed; docs reconciled; scoped reviews passed; bounded secret/history review completed; implementation and fixture fix pushed privately. | Repository remains private. Full dev audit has one unpatched finding; live Tide acceptance remains human-gated. |
-| [6 · Video and submission](phase-06-video-and-submission.md) | Demo script/checklist exist; README overview is 249 words. Repository PRIVATE verified; video and publication deferred by the user. | No final video, public repository or form confirmation. |
+| [6 · Video and submission](phase-06-video-and-submission.md) | Four-chapter, 120-second HyperFrames MP4, captions, source and README media links prepared; video review records measured export checks. | Public visibility, live Tide acceptance and form confirmation remain open. |
 
 ## Stack and implementation
 
@@ -57,7 +61,7 @@ Production smoke: `bun run start` was ready in 156 ms; `/api/config` returned 20
 - Four invitees remain unlinked; latest sync is 1/5 (`hanh` linked). Fresh app-bound invitation entry reached the ORK; its final human callback is not yet exercised.
 - First-admin activation, distinct steward keys, remaining admin grants and an actual quorum are not verified.
 - Live policy signing, same-policy/same-ciphertext ORK denial and authorized decryption/redemption, role propagation, and alternate-policy/master experiments remain untested.
-- Protected-state screenshots, end-to-end video, authorized public visibility and form confirmation are absent.
+- Live Tide-protected screenshots, authorized public visibility and form confirmation are absent. The delivered video shows the explicitly labelled SQLite simulation.
 - Bounded secret/history review, private implementation push and credential-free build are recorded in the [repository-hygiene](reports/repository-hygiene-2026-10-22.md) and [clean-checkout](reports/clean-checkout-2026-10-22.md) reports. Keep private data out of later media and submission artifacts.
 
 ## Phase references

@@ -3,6 +3,7 @@ import { mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { createDemoState } from "../model";
 import { writeSimulationState } from "./sqlite-state";
+import { migrateGovernance } from "./sqlite-governance-schema";
 
 export function openSimulationDatabase(filename: string): Database {
   if (filename !== ":memory:") mkdirSync(dirname(resolve(filename)), { recursive: true });
@@ -11,7 +12,7 @@ export function openSimulationDatabase(filename: string): Database {
     database.exec("PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000; PRAGMA journal_mode = WAL;");
     database.transaction(() => {
       const version = database.query<{ user_version: number }, []>("PRAGMA user_version").get()!.user_version;
-      if (version > 1) throw new Error("The simulation database schema is newer than this app.");
+      if (version > 2) throw new Error("The simulation database schema is newer than this app.");
       if (version === 0) {
         database.exec(`
           CREATE TABLE simulation_cycles (
@@ -36,8 +37,9 @@ export function openSimulationDatabase(filename: string): Database {
           ) STRICT;
           PRAGMA user_version = 1;
         `);
-        writeSimulationState(database, createDemoState());
       }
+      if (version < 2) migrateGovernance(database);
+      if (version === 0) writeSimulationState(database, createDemoState());
     }).immediate();
     return database;
   } catch (error) {

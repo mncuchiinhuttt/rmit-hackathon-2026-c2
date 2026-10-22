@@ -12,8 +12,8 @@ export function cycleMetadata(number: number) {
     number,
     recordId: `payout-c${number}`,
     amountVnd: CONTRIBUTION_VND * MEMBER_COUNT,
-    beneficiary: "Minh",
-    beneficiaryUsername: "minh",
+    beneficiary: number === 4 ? "Bao" : "Minh",
+    beneficiaryUsername: number === 4 ? "bao" : "minh",
     releaseRole: `hui-c${number}-winner`,
   };
 }

@@ -35,7 +35,7 @@ export function DemoProofPanel({ cycle, actor, error, onApprove, requireSignIn =
       <CardContent className="space-y-5">
         <dl className="grid grid-cols-[1fr_auto] gap-3 rounded-lg border border-border bg-background/60 p-3 text-sm">
           <dt className="text-muted-foreground">Record</dt><dd className="font-mono text-xs">{cycle.recordId}</dd>
-          <dt className="text-muted-foreground">Reader</dt><dd>Minh</dd>
+          <dt className="text-muted-foreground">Recipient</dt><dd>{cycle.beneficiary}</dd>
           <dt className="text-muted-foreground">Approvers</dt><dd>Hanh, Tuan, Mai</dd>
           <dt className="text-muted-foreground">Package</dt><dd>{cycle.sealed ? "Sample sealed" : "Not sealed"}</dd>
         </dl>
@@ -60,7 +60,7 @@ export function DemoProofPanel({ cycle, actor, error, onApprove, requireSignIn =
             <ShieldCheck aria-hidden="true" />{approved ? "Two demo approvals recorded" : alreadyVoted ? "Already approved as " + actor : "Approve as " + actor}
           </Button>
           <p className="text-xs leading-relaxed text-muted-foreground">
-            {!cycle.sealed ? switchAccount + "Bao and seal the package first." : approved ? actor === "minh" ? "Open the sample package using the release card." : switchAccount + "Minh and open the sample package." : !isDemoSteward(actor) ? switchAccount + "Hanh, Tuan or Mai to add an approval." : alreadyVoted ? switchAccount + "a different steward. One person cannot supply both approvals." : "Add your approval, then " + switchAccount.toLowerCase() + "a different steward."}
+            {!cycle.sealed ? switchAccount + "Bao and seal the package first." : approved ? actor === cycle.beneficiaryUsername ? "Open the sample package using the release card." : switchAccount + cycle.beneficiary + " and open the sample package." : !isDemoSteward(actor) ? switchAccount + "Hanh, Tuan or Mai to add an approval." : alreadyVoted ? switchAccount + "a different steward. One person cannot supply both approvals." : "Add your approval, then " + switchAccount.toLowerCase() + "a different steward."}
           </p>
         </section>
         {error && <Alert variant="destructive"><AlertTitle>Demo approval denied</AlertTitle><AlertDescription>{error}</AlertDescription></Alert>}

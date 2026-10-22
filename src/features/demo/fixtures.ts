@@ -15,9 +15,9 @@ export function demoSession(actor: DemoRole, cycle: DemoCycle): SessionView {
 export function demoRealmRoles(actor: DemoRole, cycle: DemoCycle): string[] {
   const roles = ["_tide_enabled", "appUser"];
   if (actor === "bao") roles.push("_tide_encryptor");
-  if (actor === "minh") {
+  if (actor === cycle.beneficiaryUsername || cycle.readers.includes(actor)) {
     roles.push("_tide_decryptor");
-    if (cycle.approvals.length >= 2) roles.push(cycle.releaseRole);
+    if (cycle.readers.includes(actor)) roles.push(cycle.releaseRole);
   }
   return roles;
 }
@@ -33,7 +33,7 @@ export function demoArtifact(cycle: DemoCycle): ReleaseArtifact {
   const policy = (access: "read" | "write"): StoredPolicy => ({
     recordId: cycle.recordId, access, policyB64: "demo-placeholder-not-a-signed-policy",
     subject: access === "write" ? { type: "User", id: "demo-bao" } : { type: "Role", id: cycle.releaseRole },
-    expiresAt: 4_070_908_800, createdAt: DEMO_TIME,
+    expiresAt: cycle.policyExpiresAt, createdAt: DEMO_TIME,
   });
   return {
     cycle, ciphertext: cycle.sealed ? "DEMO_ONLY: " + cycle.recordId : null,

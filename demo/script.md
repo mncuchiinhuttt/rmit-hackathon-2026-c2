@@ -1,5 +1,21 @@
 # Two-minute demo script
 
+## Current simulated product rehearsal
+
+This path is explicitly simulated. Use the main `/` workspace with SQLite and say so on screen. The delivered edited walkthrough is [video.mp4](video.mp4), with the exact narration in [voiceover-en.txt](voiceover-en.txt) and [Vietnamese translation](voiceover-vi.md). It follows the four required chapters at 0, 25, 50 and 100 seconds and ends at 120 seconds.
+
+1. Show the group flow, the receiving schedule and “What you can do.” Minh's turn is separate from Bao's cycle 4.
+2. On a fresh cycle 4, Bao seals the package. Sign in as Operator and attempt opening: denied.
+3. Operator proposes reader access for itself. Show proposer, target, cycle and Pending · not applied. Opening is still denied.
+4. Hanh approves once. Show 1/2 and another denied Operator attempt. Tuan approves independently; the request becomes Committed · applied.
+5. Operator can now open the group-authorized sample package. It cannot vote or redeem Bao's turn. An approving steward still has no reader access by default.
+6. Demonstrate the recipient's own request/approval flow and check that Minh's earlier access cannot open Bao's cycle. Use Manage access lifetime for governed renewal/revocation and explain that already copied codes cannot be recalled.
+7. Open Evidence details: local checks and saved state are demonstrated; live Tide identity, ORK, actual quorum and alternate-policy proof remain pending.
+
+Existing working fixtures may already contain approvals or redemption. Inspect them first; only use Operator's confirmed shared reset when a new fixture run is intended.
+
+## Target live recording
+
 This script describes the target recording, not completed verification. Record only operations that
 actually work. Do not create simulated approvals, credentials, ORK refusals or fake successful decryptions.
 Use the current observed threshold; say "two of three" only after one distinct approval stays pending

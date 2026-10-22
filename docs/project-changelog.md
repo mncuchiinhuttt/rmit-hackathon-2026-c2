@@ -2,6 +2,14 @@
 
 ## 2026-10-22
 
+### Rotating authority and two-minute demo
+
+- Added five-step product guidance, a receiving schedule with Minh/Bao on different turns, role-specific next actions and a collapsed technical evidence section.
+- Added persistent, versioned grant/renew/revoke proposals: pending and one approval apply no rights; two independent stewards commit a change. Proposers cannot approve their own changes. Reader grants do not grant another recipient's redemption rights.
+- Tested cross-cycle isolation, policy expiry, renewal, revocation, stale proposals and SQLite v2 migration. Sealed real-Tide records permit only expired same-scope read-policy renewal; replacement write policies remain forbidden.
+- Verification: 41 tests, 14 files, 202 expectations; typecheck, lint and production build passed. Browser proof observed denial, 0/2, 1/2, 2/2, Operator reading without redemption, and Bao's separate single-use redemption. Captures for the video used an isolated recording database, not a reset of the user's working database.
+- Authored a 120-second HyperFrames film with four supplied ElevenLabs tracks, English captions and real app-state captures. All simulated governance is labelled; live Tide encryption, decryption, quorum and alternate-policy resistance remain open acceptance gates. Repository visibility remains private.
+
 ### SQLite-backed simulation
 
 - Added Bun-native SQLite persistence for fictional cycles, distinct approvals, single-use redemption, latest 50 events and hashed sample sessions. Schema versioning, foreign keys, WAL and immediate transactions are in place; no dependency or DB service was added.

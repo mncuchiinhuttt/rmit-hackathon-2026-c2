@@ -5,6 +5,8 @@ test("sample commands reject actor spoofing on actions and unsupported input", (
   expect(parseSimulationCommand({ type: "sign-in", actor: "hanh" })).toEqual({ type: "sign-in", actor: "hanh" });
   for (const value of [
     { type: "sign-in", actor: "admin" }, { type: "approve", recordId: "payout-c3", actor: "hanh" },
+    { type: "approve", recordId: "payout-c3" },
+    { type: "propose", recordId: "payout-c3", kind: "renew", target: "operator" },
     { type: "open", recordId: "payout-c99" }, { type: "reset", sql: "DELETE" },
     { type: "redeem", recordId: "payout-c1" },
   ]) expect(() => parseSimulationCommand(value)).toThrow();

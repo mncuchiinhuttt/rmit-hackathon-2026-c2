@@ -48,7 +48,7 @@ test("only escrow seals; redemption is once per cycle and reset restores samples
   state = step(state, "redeem", "minh");
   expect(state.error?.message).toContain("already been redeemed");
   expect(state.events.filter(event => event.action === "Demo redemption recorded")).toHaveLength(1);
-  expect(reduceDemo(state, { type: "reset" })).toEqual(createDemoState());
+  expect(reduceDemo(state, { type: "reset", at: "2026-10-22T08:00:00.000Z" })).toEqual(createDemoState("2026-10-22T08:00:00.000Z"));
 });
 
 test("signed-out sessions cannot mutate a cycle or open even a pre-approved package", () => {

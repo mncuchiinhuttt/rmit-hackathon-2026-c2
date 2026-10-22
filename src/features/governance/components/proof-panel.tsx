@@ -52,8 +52,8 @@ export function ProofPanel({
     return () => window.clearInterval(timer);
   }, []);
   const allPoliciesStored = Boolean(artifact?.readPolicy && artifact.writePolicy);
-  const policiesCurrent = Boolean(artifact?.readPolicy && artifact.writePolicy && artifact.readPolicy.expiresAt > now && artifact.writePolicy.expiresAt > now);
-  const canCreate = authenticated && isSteward && artifact !== null && !policiesCurrent;
+  const policiesCurrent = Boolean(artifact?.readPolicy && artifact.readPolicy.expiresAt > now && (artifact.cycle.sealed || artifact.writePolicy && artifact.writePolicy.expiresAt > now));
+  const canCreate = authenticated && isSteward && artifact !== null && !policiesCurrent && (!artifact.cycle.sealed || Boolean(artifact.readPolicy));
 
   return (
     <Card className="relative overflow-hidden border-white/10 bg-card/90">
@@ -145,11 +145,12 @@ export function ProofPanel({
               <>
                 <Button type="button" className="w-full" disabled={!canCreate || policyPending} onClick={onCreatePolicies}>
                   <ShieldCheck aria-hidden="true" />
-                  {policiesCurrent ? "Policies available" : policyPending ? "Creating policies…" : allPoliciesStored ? "Refresh expired policies" : artifact?.readPolicy || artifact?.writePolicy ? "Complete policy set" : "Create release policies"}
+                  {policiesCurrent ? "Read access policy current" : policyPending ? "Requesting Tide signature…" : artifact?.cycle.sealed ? "Renew read policy through Tide" : allPoliciesStored ? "Renew expired policies through Tide" : artifact?.readPolicy || artifact?.writePolicy ? "Complete policy set" : "Create release policies"}
                 </Button>
                 {authenticated && !policiesCurrent && (
                   <p className="text-xs leading-relaxed text-muted-foreground">Requires the active Tide steward session and enclave. No approval is simulated in this app.</p>
                 )}
+                {artifact?.cycle.sealed && <p className="text-xs text-muted-foreground">After sealing, renewal replaces only the expired read policy. Ciphertext and the write grant stay unchanged.</p>}
               </>
             )}
             {isSteward && authenticated && (

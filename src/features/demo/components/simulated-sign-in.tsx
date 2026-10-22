@@ -9,12 +9,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { DEMO_ACTORS, type DemoRole } from "../model";
 
 const ACCOUNT_HELP: Record<DemoRole, string> = {
-  minh: "Can open and redeem a release only after two different stewards approve that cycle.",
+  minh: "Receives cycles 1 and 3. Request access and wait for two stewards; those rights do not carry into Bao's cycle 4.",
   hanh: "Can add one approval per cycle. Cannot seal, open or redeem a release.",
   tuan: "Can add one approval per cycle. Cannot seal, open or redeem a release.",
   mai: "Can add one approval per cycle. Cannot seal, open or redeem a release.",
-  bao: "Can seal an unsealed sample package. Cannot approve or read the release.",
-  operator: "Can inspect the circle and try a denied open. Cannot approve, seal or read a release.",
+  bao: "Seals packages and receives cycle 4. Even your own sealed turn needs a request and independent approval before you may read.",
+  operator: "Hosts the app but cannot read or vote. Proposing access for yourself creates a pending request, not permission.",
 };
 
 interface SimulatedSignInProps {

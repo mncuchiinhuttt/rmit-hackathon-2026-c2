@@ -58,9 +58,9 @@ export function OpenedReleaseDialog({
             {eligible
               ? redeemed
                 ? "The synthetic redemption was accepted. The single-use code is no longer shown."
-                : preview ? "Two local demo approvals unlocked this sample package for Minh. This is a simulation; no Tide decryption took place."
+                : preview ? `A committed sample reader grant opened this package. Only ${release.beneficiary} may redeem. This is a simulation; no Tide decryption took place.`
                 : "This session received the release from the live open action. Keep the redemption code private; it is not written to persistent browser storage."
-              : "Tide returned release data, but this session or record does not match the expected beneficiary. The code is withheld and redemption is unavailable."}
+              : preview ? `Your group approved reader access, not payout ownership. You may view this sample code, but only ${release.beneficiary} may redeem. A copied code cannot be recalled.` : "Tide returned release data, but this session or record does not match the expected beneficiary. The code is withheld and redemption is unavailable."}
           </DialogDescription>
         </DialogHeader>
 
@@ -79,7 +79,7 @@ export function OpenedReleaseDialog({
               <dd className="mt-1 text-xl font-semibold tabular-nums text-foreground">{formatVnd(release.amountVnd)}</dd>
             </div>
           </dl>
-          {eligible && !redeemed ? (
+          {(eligible || preview) && !redeemed ? (
             <div>
               <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Single-use redemption code</p>
               <code className="mt-2 block max-h-28 overflow-auto break-all rounded-md border border-border bg-card px-3 py-3 font-mono text-sm text-foreground" aria-label="Redemption code">

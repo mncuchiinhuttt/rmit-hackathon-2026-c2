@@ -9,6 +9,7 @@ import type { ReleaseArtifact, SealingPayload, StoredPolicy } from "@/features/r
 import { appendLedgerEvent, readLedger, updateLedger } from "@/features/releases/server/persistence";
 import { validateSubmittedPolicy } from "@/features/releases/server/policy-validation";
 import { recordIdFromQuery, parseRecordId } from "@/features/releases/server/record-id";
+import { assertPolicyReplacement } from "./policy-lifecycle";
 
 function cycleSummary(recordId: string, ciphertext: string | null, redeemedAt: string | null, sealedAt: string | null): CycleSummary {
   const metadata = CYCLE_NUMBERS.map(cycleMetadata).find((cycle) => cycle.recordId === recordId);
@@ -52,18 +53,14 @@ export async function storePolicy(request: Request, auth: AuthContext): Promise<
   const body = requireJsonObject(await readJsonBody(request));
   const stored = validateSubmittedPolicy(body);
   await updateLedger((ledger) => {
-    if (ledger.releases[stored.recordId]) {
-      throw new ApiError(409, "release_already_sealed", "A sealed release policy cannot be replaced.");
-    }
     const now = Math.floor(Date.now() / 1000);
     const existingIndex = ledger.policies.findIndex((policy) => policy.recordId === stored.recordId && policy.access === stored.access);
-    if (existingIndex >= 0 && ledger.policies[existingIndex].expiresAt > now) {
-      throw new ApiError(409, "policy_exists", "A valid policy for this record and access level already exists.");
-    }
+    assertPolicyReplacement(ledger.policies[existingIndex], stored, Boolean(ledger.releases[stored.recordId]), now);
     const policies = [...ledger.policies];
     if (existingIndex >= 0) policies.splice(existingIndex, 1, stored);
     else policies.push(stored);
-    const next = { ...ledger, policies, events: appendLedgerEvent(ledger, event(auth, `policy_${stored.access}_stored`, stored.recordId)) };
+    const action = existingIndex >= 0 ? `policy_${stored.access}_renewed` : `policy_${stored.access}_stored`;
+    const next = { ...ledger, policies, events: appendLedgerEvent(ledger, event(auth, action, stored.recordId)) };
     return { next, result: undefined };
   });
   return jsonResponse({ policy: stored, signature: { bytesPresent: true, cryptographicVerification: "delegated_to_ork" } }, 201);

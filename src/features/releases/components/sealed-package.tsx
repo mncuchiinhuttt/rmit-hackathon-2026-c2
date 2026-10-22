@@ -72,7 +72,7 @@ export function SealedPackage({
               Release package
             </CardTitle>
             <CardDescription className="mt-2 max-w-xl">
-              {preview ? "Try the release flow with sample data. Two different demo stewards must approve before the recipient can open this package. No encryption or Tide request runs here." : "The payout is sealed under Tide policy. Any authenticated circle member may attempt disclosure; the ORKs decide whether this session can open it."}
+              {persistent ? `${cycle.beneficiary}'s turn. A request must be committed by two independent stewards before a new reader can open the sample code.` : preview ? "Try the release flow with sample data. Two different demo stewards must approve before the recipient can open this package. No encryption or Tide request runs here." : "The payout is sealed under Tide policy. Any authenticated circle member may attempt disclosure; the ORKs decide whether this session can open it."}
             </CardDescription>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -180,7 +180,7 @@ export function SealedPackage({
         )}
 
         <p className="border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground">
-          {persistent ? "SQLite-backed sample workflow, not Tide security guarantees. Saved approvals and redemption survive reloads. Only Operator can reset shared data; real funds never move." : preview ? "Offline demo only. Role checks, approvals and package contents are sample UI behavior, not Tide security guarantees. Resetting or reloading clears your changes." : "Tide controls policy-based disclosure. This screen is not financial custody and cannot attest that a modified browser client preserves plaintext confidentiality."}
+          {persistent ? "Only the scheduled recipient can redeem, even if the group approves another reader. Funds are fictional; an already viewed or copied code cannot be recalled." : preview ? "Offline demo only. Role checks, approvals and package contents are sample UI behavior, not Tide security guarantees. Resetting or reloading clears your changes." : "Tide controls policy-based disclosure. This screen is not financial custody and cannot attest that a modified browser client preserves plaintext confidentiality."}
         </p>
       </CardContent>
     </Card>

@@ -1,5 +1,6 @@
 import { CYCLE_NUMBERS, cycleMetadata } from "@/features/circle/model";
 import type { AuditEvent, CycleSummary } from "@/features/circle/types";
+import { POLICY_LIFETIME_SECONDS, type DemoChange } from "./governance-types";
 
 export type DemoRole = "minh" | "hanh" | "tuan" | "mai" | "bao" | "operator";
 export const DEMO_ACTORS: { id: DemoRole; name: string; role: string }[] = [
@@ -11,13 +12,20 @@ export const DEMO_ACTORS: { id: DemoRole; name: string; role: string }[] = [
   { id: "operator", name: "Operator", role: "Host" },
 ];
 export const DEMO_TIME = "2026-10-22T07:00:00.000Z";
-export interface DemoCycle extends CycleSummary { approvals: DemoRole[] }
+export interface DemoCycle extends CycleSummary {
+  approvals: DemoRole[];
+  readers: DemoRole[];
+  policyVersion: number;
+  policyExpiresAt: number;
+  policyRevoked: boolean;
+}
 export interface DemoState {
   cycles: DemoCycle[];
   events: AuditEvent[];
+  changes: DemoChange[];
   error: { operation: "seal" | "policies" | "open" | "redeem"; message: string } | null;
 }
-export type DemoAction = { type: "reset" } | { type: "clear" } | {
+export type DemoAction = { type: "reset"; at?: string } | { type: "clear" } | {
   type: "seal" | "approve" | "open" | "redeem";
   actor: DemoRole | null;
   recordId: string;
@@ -28,7 +36,7 @@ export function isDemoSteward(actor: DemoRole | null) {
   return actor === "hanh" || actor === "tuan" || actor === "mai";
 }
 
-export function createDemoState(): DemoState {
+export function createDemoState(at = new Date().toISOString()): DemoState {
   return {
     cycles: CYCLE_NUMBERS.map(number => {
       const sealed = number !== 4;
@@ -37,6 +45,8 @@ export function createDemoState(): DemoState {
         ciphertextBytes: sealed ? ("DEMO_ONLY: payout-c" + number).length : 0,
         sealedAt: sealed ? DEMO_TIME : null,
         approvals: number === 1 ? ["hanh", "tuan"] : [],
+        readers: number === 1 ? ["minh"] : [], policyVersion: 1,
+        policyExpiresAt: Math.floor(Date.parse(at) / 1000) + POLICY_LIFETIME_SECONDS, policyRevoked: false,
       };
     }),
     events: [
@@ -44,19 +54,21 @@ export function createDemoState(): DemoState {
       { id: "demo-c1", at: DEMO_TIME, actor: "Hanh + Tuan", action: "Demo access approved for cycle 1", recordId: "payout-c1" },
     ],
     error: null,
+    changes: [],
   };
 }
 
-export function demoOpenError(cycle: DemoCycle, actor: DemoRole | null): string | null {
+export function demoOpenError(cycle: DemoCycle, actor: DemoRole | null, now = Date.now() / 1000): string | null {
   if (!actor) return "Sign in to a sample account before opening a package.";
   if (!cycle.sealed) return "No sample package is sealed. Switch to Bao to seal it first.";
-  if (actor !== "minh") return "Only Minh, the demo recipient, can open this package. Stewards approve access but cannot read.";
-  if (cycle.approvals.length < 2) return "Minh needs two different steward approvals for this cycle. Approvals for another cycle do not count.";
+  if (cycle.policyRevoked) return "Access to this cycle was revoked. A governed renewal and a new reader grant are needed. Already viewed or copied codes cannot be recalled.";
+  if (cycle.policyExpiresAt <= now) return "This cycle's policy expired. Request renewal and obtain two independent steward approvals before opening again.";
+  if (!cycle.readers.includes(actor)) return `${cycle.beneficiary} is scheduled to receive this cycle. Your account needs a committed reader grant from two different stewards; another cycle's access does not count.`;
   return null;
 }
 
 export function reduceDemo(state: DemoState, action: DemoAction): DemoState {
-  if (action.type === "reset") return createDemoState();
+  if (action.type === "reset") return createDemoState(action.at);
   if (action.type === "clear") return { ...state, error: null };
   const cycle = state.cycles.find(item => item.recordId === action.recordId);
   const operation = action.type === "approve" ? "policies" : action.type;
@@ -72,7 +84,8 @@ export function reduceDemo(state: DemoState, action: DemoAction): DemoState {
     else if (cycle.approvals.includes(action.actor)) message = "This steward has already approved. Choose a different steward.";
     else if (cycle.approvals.length >= 2) message = "Two demo approvals are already recorded.";
   } else {
-    message = demoOpenError(cycle, action.actor);
+    message = demoOpenError(cycle, action.actor, Date.parse(action.at) / 1000);
+    if (!message && action.type === "redeem" && action.actor !== cycle.beneficiaryUsername) message = "Only the scheduled beneficiary may redeem, even when another reader has approved access.";
     if (!message && action.type === "redeem" && cycle.redeemed) message = "This demo code has already been redeemed.";
   }
   const name = DEMO_ACTORS.find(actor => actor.id === action.actor)?.name ?? action.actor;
@@ -86,6 +99,7 @@ export function reduceDemo(state: DemoState, action: DemoAction): DemoState {
       label = "Demo package sealed";
     } else if (action.type === "approve") {
       nextCycle.approvals.push(action.actor);
+      if (nextCycle.approvals.length >= 2 && !nextCycle.readers.includes(cycle.beneficiaryUsername as DemoRole)) nextCycle.readers = [...nextCycle.readers, cycle.beneficiaryUsername as DemoRole];
       label = "Demo approval " + nextCycle.approvals.length + "/2 recorded";
     } else if (action.type === "redeem") {
       nextCycle.redeemed = true;
@@ -93,6 +107,7 @@ export function reduceDemo(state: DemoState, action: DemoAction): DemoState {
     } else label = "Demo package opened";
   }
   return {
+    ...state,
     cycles: state.cycles.map(item => item.recordId === cycle.recordId ? nextCycle : item),
     error: message ? { operation, message } : null,
     events: [...state.events, {

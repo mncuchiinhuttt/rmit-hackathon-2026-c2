@@ -18,7 +18,8 @@ export async function createPolicies(recordId: string): Promise<void> {
   if (!config || typeof config !== 'object' || !('vendorId' in config) || typeof config.vendorId !== 'string' || !config.vendorId) throw new Error('The adapter has no Tide vendor identifier');
   const adminBytes = Uint8Array.from(atob(admin.policyB64), character => character.charCodeAt(0));
   const expiresAt = Math.floor(Date.now() / 1000) + 48 * 60 * 60;
-  for (const access of ['write', 'read'] as const) {
+  const accessLevels: Array<'read' | 'write'> = artifact.cycle.sealed ? ['read'] : ['write', 'read'];
+  for (const access of accessLevels) {
     const existing: StoredPolicy | null = access === 'write' ? artifact.writePolicy : artifact.readPolicy;
     if (existing && existing.expiresAt > Date.now() / 1000) continue;
     const subject = access === 'write'

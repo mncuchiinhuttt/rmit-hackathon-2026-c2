@@ -2,13 +2,15 @@
 
 Current demo: SQLite-backed sample workflow with explicitly simulated TideCloak identities/roles, enabled through local configuration. Real Tide authentication/E2EE acceptance remains incomplete; see the [SQLite setup](docs/sqlite-simulation.md) and [integration plan](docs/tidecloak-integration-plan.md).
 
+**Two-minute demo:** [Watch or download the MP4](demo/video.mp4) · [English captions](demo/video-en.srt) · [Rebuild the HyperFrames video](demo/hyperframes/README.md). Four sections: The possibility, The constraint, The prototype, What changes. Actual app captures and supplied ElevenLabs narration; simulated governance is labelled throughout.
+
 ## Project overview
 
 Hostless Hui is a prototype for rotating savings circles that separates cycle-release approval from plaintext access.
 
 ### 1. Vision & originality
 
-Each synthetic cycle has an encrypted release package and recipient entitlement. Stewards approve access through Tide; the recipient opens the package. Authority is intended to rotate with the cycle rather than accumulate in a permanent host.
+Each synthetic cycle has a release package and a different recipient entitlement. Stewards approve disclosure; the recipient alone redeems. The intended Tide design encrypts these packages outside server custody. Authority rotates with the cycle rather than accumulating in a permanent host.
 
 ### 2. Trust constraint insight
 
@@ -24,7 +26,7 @@ Protected routes verify Tide JWTs and DPoP; release code includes the Tide SDK a
 
 ### 5. Prototype & storytelling
 
-The Next.js/Bun feature-first app, local adapter export, protected API boundary and real Tide sign-in navigation are implemented. Five Keycloak accounts are prepared, but the latest sync found 1/5 Tide-linked identities. Browser smoke reached the ORK sign-in form without credentials being entered. Full enrollment, distinct steward keys, IGA activation, live release acceptance, protected-state screenshots and a final video remain gates.
+The Next.js/Bun app demonstrates rotating recipients, Operator denial, pending proposals, two independent simulated approvals, read-versus-redeem separation and governed expiry/renewal/revocation. SQLite preserves decisions. The two-minute demo shows actual app states and explicitly distinguishes the simulation from the implemented but unverified live Tide integration. Full enrollment, distinct steward keys, IGA activation and live cryptographic acceptance remain gates.
 
 ## Run locally
 
@@ -41,7 +43,11 @@ The development server binds to `127.0.0.1` at `http://localhost:3000`. Do not r
 
 With `HUI_AUTH_MODE=simulated`, open http://localhost:3000/ and choose a fictional account. The main app uses a server-side sample session and saves cycles, approvals, redemption and events in `data/simulation.sqlite`. Bun supplies the SQLite driver; no additional DB server is needed. Data and sessions survive reloads/restarts. This is not real authentication, encryption or a Tide/ORK decision; real protected APIs still require verified Tide credentials.
 
-On a fresh database, Minh's cycle 3 open is denied. Sign out and sign in as Hanh to approve, then as Tuan to add the second approval. Steward and Operator reads remain denied. Sign back in as Minh to open/redeem. Bao can seal cycle 4. Sign-out clears opened contents, not saved changes. Use Refresh data or reload for updates made in another browser. Only Operator can confirm Reset shared demo; this replaces fictional data for everyone using this server, not real Tide data.
+The workspace explains the five-step savings-circle flow, each account's next action and the receiving schedule. Minh receives cycles 1/3; Bao receives cycle 4. On fresh fixtures, Minh must request cycle 3 access before Hanh and Tuan can approve it. Pending and one vote grant nothing; the second independent vote commits access. A proposer cannot approve their own request.
+
+For the main demonstration: Bao seals cycle 4, Operator tries to open (denied), then proposes reader access for itself. The request stays pending until two stewards approve. Operator can then read that cycle, while only Bao can redeem. Earlier-cycle access does not carry over. Governed renewal and revocation are under Manage access lifetime; technical claims are under Evidence details. See [lifecycle rules and live proof still required](docs/policy-lifecycle-and-evidence.md).
+
+Sign-out clears opened contents, not saved changes. Refresh data reads updates from other browsers. Only Operator can confirm a shared fixture reset. Schema v2 preserves historical redemption/events and leaves an already sealed legacy recipient unchanged.
 
 Set `HUI_AUTH_MODE=tide` and restart to use the preserved real integration. An absent mode defaults to Tide, never simulation; an invalid mode fails. See the [Tide MCP integration plan and role matrix](docs/tidecloak-integration-plan.md). Live cryptographic acceptance remains unverified.
 
@@ -81,7 +87,7 @@ bun run build
 bun run tide:verify
 ```
 
-The SQLite update passed all 31 tests across 11 files with 142 expectations, including persistence after reopening, separate DB connections, server-side role denials, single-use redemption, session rotation, same-origin enforcement, failed-write rollback and safe rejection of newer schemas. Typecheck, lint and production build passed. Isolated subprocess fixtures use directory junctions on Windows and directory symlinks on other platforms. A restricted OS sandbox may still need permission to access temporary fixtures; the passing Windows suite was run outside that sandbox. `tide:verify` is for real Tide setup, not a requirement or success claim for simulation.
+The governance update passed all 41 tests across 14 files with 202 expectations, including persistence, migration, cross-cycle denial, independent proposal votes, expiry, renewal, revocation, single-use redemption, same-origin enforcement and scoped sealed read-policy replacement. Typecheck, lint and production build passed. Isolated subprocess fixtures use directory junctions on Windows and directory symlinks on other platforms. A restricted OS sandbox may need permission to access temporary fixtures; the passing Windows suite was run outside that sandbox. `tide:verify` is for real Tide setup, not a requirement or success claim for simulation.
 
 The earlier credential-free source export passed 15 tests across seven files with 39 expectations. Its initial two policy-fixture failures were repaired with isolated matching-vendor adapters without weakening production validation. See the [clean-checkout report](plans/20261022-1026-challenge-2-tidecloak-app/reports/clean-checkout-2026-10-22.md).
 
@@ -95,7 +101,7 @@ Production audit found no vulnerabilities across 92 packages; the full audit sti
 - `src/app/api`: thin route adapters; `src/components/ui`: shadcn/Radix primitives.
 - `scripts/tide`: guarded bootstrap only; never used as application runtime authority.
 - [Architecture and limits](docs/system-architecture.md), [project rules](AGENTS.md), [implementation plan](plans/20261022-1026-challenge-2-tidecloak-app/plan.md).
-- [Demo script](demo/script.md) and [acceptance checklist](demo/checklist.md). A final submission video has not been recorded yet.
+- [Demo video](demo/video.mp4), [demo script](demo/script.md), [HyperFrames source](demo/hyperframes/README.md) and [acceptance checklist](demo/checklist.md).
 
 ## Security and scope
 
